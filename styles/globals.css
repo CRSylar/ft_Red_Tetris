@@ -14,3 +14,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+@font-face {
+  font-family: "tetris";
+  src: url("/public/fonts/Tetris.ttf");
+}

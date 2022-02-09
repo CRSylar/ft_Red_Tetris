@@ -1,8 +1,11 @@
 .container {
   padding: 0 2rem;
+  background-color: gainsboro;
+
 }
 
 .main {
+  background-color: gainsboro;
   min-height: 100vh;
   padding: 4rem 0;
   flex: 1;
@@ -11,6 +14,38 @@
   justify-content: center;
   align-items: center;
 }
+
+.name {
+  color: red;
+}
+
+.game_1 {
+  font-family: tetris, serif;
+  color: darkviolet;
+}
+
+.game_2 {
+  font-family: tetris, serif;
+  color: blue;
+}
+
+.game_3 {
+  font-family: tetris, serif;
+  color: lightskyblue;
+}
+
+.game_4 {
+  font-family: tetris, serif;
+  color: #bbbb0d;
+}
+.game_5 {
+  font-family: tetris, serif;
+  color: #039b03;
+}
+.game_6 {
+  font-family: tetris, serif;
+  color: red;
+ }
 
 .footer {
   display: flex;
