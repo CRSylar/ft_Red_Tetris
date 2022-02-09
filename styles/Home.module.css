@@ -1,11 +1,14 @@
 .container {
   padding: 0 2rem;
-  background-color: gainsboro;
+  background-color: black;
+  background-image: url("/tetris-wallpaper.jpeg");
+  background-repeat: repeat-x;
+  background-position: right bottom;
 
 }
 
 .main {
-  background-color: gainsboro;
+  #background-color: black;
   min-height: 100vh;
   padding: 4rem 0;
   flex: 1;
@@ -15,69 +18,34 @@
   align-items: center;
 }
 
-.name {
-  color: red;
-}
-
-.game_1 {
-  font-family: tetris, serif;
-  color: darkviolet;
-}
-
-.game_2 {
-  font-family: tetris, serif;
-  color: blue;
-}
-
-.game_3 {
-  font-family: tetris, serif;
-  color: lightskyblue;
-}
-
-.game_4 {
-  font-family: tetris, serif;
-  color: #bbbb0d;
-}
-.game_5 {
-  font-family: tetris, serif;
-  color: #039b03;
-}
-.game_6 {
-  font-family: tetris, serif;
-  color: red;
- }
-
-.footer {
-  display: flex;
-  flex: 1;
-  padding: 2rem 0;
-  border-top: 1px solid #eaeaea;
-  justify-content: center;
-  align-items: center;
-}
-
-.footer a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.title a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-.title a:hover,
-.title a:focus,
-.title a:active {
-  text-decoration: underline;
-}
-
 .title {
+  pointer-events: none;
+  position: absolute;
+  top: 5rem;
+  color: white;
   margin: 0;
   line-height: 1.15;
   font-size: 4rem;
+
+  text-shadow:
+          0 0 7px #f00,
+          0 0 10px #bc13fe,
+          0 0 21px #f00,
+          0 0 42px #f00,
+          0 0 82px #bc13fe,
+          0 0 92px #bc13fe,
+          0 0 102px #f00,
+          0 0 151px #f00;
+
+  border: 0.2rem solid #fff;
+  border-radius: 2rem;
+  padding: 0.4em;
+  box-shadow: 0 0 .2rem #fff,
+  0 0 .2rem #fff,
+  0 0 2rem #ff0000,
+  0 0 0.8rem #bc13fe,
+  0 0 2.8rem #bc13fe,
+  inset 0 0 1.3rem #bc13fe;
 }
 
 .title,
@@ -85,62 +53,17 @@
   text-align: center;
 }
 
-.description {
-  margin: 4rem 0;
-  line-height: 1.5;
-  font-size: 1.5rem;
-}
-
-.code {
-  background: #fafafa;
-  border-radius: 5px;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
-}
-
-.grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 800px;
-}
-
-.card {
-  margin: 1rem;
-  padding: 1.5rem;
-  text-align: left;
-  color: inherit;
-  text-decoration: none;
-  border: 1px solid #eaeaea;
-  border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 300px;
-}
-
-.card:hover,
-.card:focus,
-.card:active {
-  color: #0070f3;
-  border-color: #0070f3;
-}
-
-.card h2 {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
-}
-
-.card p {
-  margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.5;
-}
-
-.logo {
-  height: 1em;
-  margin-left: 0.5rem;
+.enter {
+  position: absolute;
+  color: white;
+  border: 0.1rem solid #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 .2rem #f00,
+  0 0 .1rem #f00,
+  0 0 1rem #ff0000,
+  0 0 0.4rem #ff0000,
+  0 0 1.6rem #ff0000,
+  inset 0 0 .7rem #bc13fe;
 }
 
 @media (max-width: 600px) {
