@@ -1,15 +1,10 @@
 import React from 'react';
+import WithAuth from "./HOC/WithAuth";
+import HomeComponent from "../components/HomeComponent";
 
-function Home (props) {
+function Home () {
 	return (
-		<div>
-			{/* NAVBAR */}
-
-			{/* START NEW GAME */}
-
-			{/* RULES & SETTINGS */}
-
-		</div>
+		WithAuth(HomeComponent)
 	);
 }
 
