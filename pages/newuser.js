@@ -30,9 +30,9 @@ function Newuser () {
 			<Box className={styles.signup__box}>
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.signup__form} >
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
-					       sx={{color:'white', my:'2rem'}} placeholder={'Username'}
-					       color={'secondary'}
-					       {...register("Username", {required:true})}/>
+						sx={{color:'white', my:'2rem'}} placeholder={'Username'}
+						color={'secondary'}
+						{...register("Username", {required:true})}/>
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
 						sx={{color:'white'}} placeholder={'Email'}
 						color={'secondary'}

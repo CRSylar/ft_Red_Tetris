@@ -36,8 +36,9 @@
 }
 
 .login__submit {
+
     border: 1px solid #515152;
-    color: black;
+    text-transform: none;
 }
 .login__submit:hover {
     background-color: black;

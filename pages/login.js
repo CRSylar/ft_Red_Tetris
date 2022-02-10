@@ -42,7 +42,7 @@ function Login () {
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.login__form} >
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
 					       className={styles.icon}
-					       sx={{color: bg? 'black' : 'white', my:'2rem' }} placeholder={'Email'}
+					       sx={{color: bg? 'black' : 'white', my:'2rem'}} placeholder={'Email'}
 					       color={'secondary'}
 					       {...register("Email", {required:true})}/>
 					<Input
@@ -55,7 +55,7 @@ function Login () {
 							pattern: { value: strongRegex,
 								message: 'Something Wrong, please check'
 							}})}/>
-					<Button type={"submit"} className={styles.login__submit}>{'Enter'}</Button>
+					<Button type={"submit"} className={styles.login__submit} sx={{color: bg? 'black' : 'white'}}>{'Enter'}</Button>
 				</form>
 				{errors.Password && (<p className={styles.errorMsg}>{errors.Password.message}</p>)}
 			</Box>
