@@ -1,6 +1,9 @@
 
 .main {
     background-color: black;
+    background-image: url("/tetris-wallpaper.jpeg");
+    background-repeat: repeat-x;
+    background-position: right bottom;
     min-height: 100vh;
     justify-content: center;
     flex-direction: column;
@@ -9,7 +12,7 @@
 
 .login__box {
     width: 300px;
-    color: white;
+    color: black;
     margin: auto;
     padding: 2rem;
     border: 1px solid gainsboro;
@@ -22,6 +25,10 @@
     inset 0 0 .7rem #bc13fe;
 }
 
+.login__box:hover {
+    background-color: gainsboro;
+}
+
 .login__form {
     display: flex;
     flex-direction: column;
@@ -30,11 +37,11 @@
 
 .login__submit {
     border: 1px solid #515152;
-    color: white;
+    color: black;
 }
 .login__submit:hover {
-    background-color: white;
-    color: #515152;
+    background-color: black;
+    color: gainsboro;
 }
 
 .errorMsg {

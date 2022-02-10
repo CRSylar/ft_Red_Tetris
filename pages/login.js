@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from '/styles/Login.module.css';
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
@@ -8,17 +8,20 @@ import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
 import Favico from "../components/Favico";
 import {useRouter} from "next/router";
+import Image from "next/image";
 
 function Login () {
 
 	const router = useRouter()
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
+	const [bg, setBg] = useState(false)
 
 	const onSubmit = (data) => {
 		console.log(data)
 		reset()
 	}
+
 
 	return (
 		<div className={styles.main}>
@@ -33,17 +36,21 @@ function Login () {
 					{'New ?'}
 				</h3>
 			</div>
-			<Box className={styles.login__box}>
+			<Box className={styles.login__box} onMouseEnter={() => setBg(true)}
+			     onMouseLeave={()=> setBg(false)}
+			>
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.login__form} >
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
-					       sx={{color:'white', my:'2rem'}} placeholder={'Email'}
+					       className={styles.icon}
+					       sx={{color: bg? 'black' : 'white', my:'2rem' }} placeholder={'Email'}
 					       color={'secondary'}
 					       {...register("Email", {required:true})}/>
 					<Input
 						startAdornment={<PasswordIcon sx={{mr:'.5rem'}}/>}
 						color={'secondary'}
 						type={'password'}
-						sx={{color:'white', mb:'2rem'}} placeholder={'Password'} {...register("Password",
+						sx={{color: bg? 'black' : 'white', mb:'2rem'}}
+						placeholder={'Password'} {...register("Password",
 						{required: 'Password is required',
 							pattern: { value: strongRegex,
 								message: 'Something Wrong, please check'
