@@ -10,7 +10,7 @@
 .login__box {
     width: 300px;
     color: white;
-    margin: -5rem auto auto auto;
+    margin: auto;
     padding: 2rem;
     border: 1px solid gainsboro;
     border-radius: 10%;
@@ -51,7 +51,7 @@
     margin: auto;
 }
 
-.title {
+.login__neon {
     text-align: center;
     max-width: 300px;
     pointer-events: none;
@@ -78,4 +78,36 @@
     0 0 0.8rem #bc13fe,
     0 0 2.8rem #bc13fe,
     inset 0 0 1.3rem #bc13fe;
+}
+
+.new__box {
+    cursor: pointer;
+    margin: -3.5rem auto;
+}
+
+.signup__neon {
+    text-align: center;
+    max-width: 100px;
+    color: white;
+    line-height: 1.15;
+    font-size: 1rem;
+    text-shadow:
+            0 0 7px #0f0,
+            0 0 10px #04862d,
+            0 0 21px #0f0,
+            0 0 42px #0f0,
+            0 0 82px #04862d,
+            0 0 92px #04862d,
+            0 0 102px #0f0,
+            0 0 151px #0f0;
+
+    border: 0.2rem solid #fff;
+    border-radius: 2rem;
+    padding: 0.4em;
+    box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem #00ff00,
+    0 0 0.8rem #04862d,
+    0 0 2.8rem #04862d,
+    inset 0 0 1.3rem #04862d;
 }

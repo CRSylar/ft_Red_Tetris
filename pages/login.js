@@ -6,9 +6,12 @@ import Input from "@mui/material/Input";
 import {Button} from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
+import Favico from "../components/Favico";
+import {useRouter} from "next/router";
 
 function Login () {
 
+	const router = useRouter()
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -19,10 +22,16 @@ function Login () {
 
 	return (
 		<div className={styles.main}>
+			<Favico/>
 			<div className={styles.container}>
-				<h1 className={styles.title}>
+				<h1 className={styles.login__neon}>
 					{'Log-In '}
 				</h1>
+			</div>
+			<div className={styles.new__box} onClick={() => router.push('/newuser')}>
+				<h3 className={styles.signup__neon}>
+					{'New ?'}
+				</h3>
 			</div>
 			<Box className={styles.login__box}>
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.login__form} >
