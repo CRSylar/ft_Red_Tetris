@@ -36,9 +36,9 @@ function Login () {
 			<Box className={styles.login__box}>
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.login__form} >
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
-					       sx={{color:'white', my:'2rem'}} placeholder={'Username'}
+					       sx={{color:'white', my:'2rem'}} placeholder={'Email'}
 					       color={'secondary'}
-					       {...register("Username", {required:true})}/>
+					       {...register("Email", {required:true})}/>
 					<Input
 						startAdornment={<PasswordIcon sx={{mr:'.5rem'}}/>}
 						color={'secondary'}
