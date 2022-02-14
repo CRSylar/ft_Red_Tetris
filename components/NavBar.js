@@ -45,8 +45,10 @@ function NavBar () {
 
 					{/* Buttons */}
 					<div className={styles.leftElements}>
-						<ManageAccountsIcon sx={{ marginLeft: '1rem'}}/>
-						<LogoutIcon sx={{ marginLeft: '1rem'}}/>
+						<ManageAccountsIcon sx={{ marginLeft: '1rem'}}
+						                    onClick={() => router.push('/settings')}  />
+						<LogoutIcon sx={{ marginLeft: '1rem'}}
+						            onClick={() => console.log("LOGOUT")} />
 					</div>
 
 				</div>
