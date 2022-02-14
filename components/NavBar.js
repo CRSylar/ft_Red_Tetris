@@ -5,6 +5,8 @@ import tetris from '../public/red-Teris.png'
 import SearchIcon from '@mui/icons-material/Search';
 import {useForm} from "react-hook-form";
 import {useRouter} from "next/router";
+import LogoutIcon from '@mui/icons-material/Logout';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 function NavBar () {
 
@@ -19,6 +21,7 @@ function NavBar () {
 	return (
 		<div className={styles.container}>
 				<div className={styles.main}>
+					{/* LOGO */}
 					<div className={styles.logo}>
 						<Image src={tetris} className={styles.imgLogo} alt={"Red_tetris"} width={60} height={60}/>
 					</div>
@@ -39,8 +42,14 @@ function NavBar () {
 							</form>
 						</div>
 					</div>
-				</div>
 
+					{/* Buttons */}
+					<div className={styles.leftElements}>
+						<ManageAccountsIcon sx={{ marginLeft: '1rem'}}/>
+						<LogoutIcon sx={{ marginLeft: '1rem'}}/>
+					</div>
+
+				</div>
 		</div>
 	);
 }

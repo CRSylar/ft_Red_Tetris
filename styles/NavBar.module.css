@@ -51,3 +51,10 @@
     --tw-ring-color: rgb(0 0 0);
     border: 1px solid black;
 }
+
+.leftElements{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    color: white;
+}
