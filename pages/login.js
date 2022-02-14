@@ -8,7 +8,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
 import Favico from "../components/Favico";
 import {useRouter} from "next/router";
-import Image from "next/image";
 
 function Login () {
 
