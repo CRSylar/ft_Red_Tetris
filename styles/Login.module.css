@@ -3,7 +3,7 @@
     background-color: black;
     background-image: url("/tetris-wallpaper.jpeg");
     background-repeat: repeat-x;
-    background-position: right bottom;
+    background-position: left bottom;
     min-height: 100vh;
     justify-content: center;
     flex-direction: column;
