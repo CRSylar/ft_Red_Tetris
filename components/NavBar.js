@@ -22,7 +22,7 @@ function NavBar () {
 		<div className={styles.container}>
 				<div className={styles.main}>
 					{/* LOGO */}
-					<div className={styles.logo}>
+					<div className={styles.logo} onClick={() => router.push('/home')}>
 						<Image src={tetris} className={styles.imgLogo} alt={"Red_tetris"} width={60} height={60}/>
 					</div>
 
@@ -45,9 +45,9 @@ function NavBar () {
 
 					{/* Buttons */}
 					<div className={styles.leftElements}>
-						<ManageAccountsIcon sx={{ marginLeft: '1rem'}}
+						<ManageAccountsIcon sx={{ marginLeft: '1rem', cursor:'pointer'}}
 						                    onClick={() => router.push('/settings')}  />
-						<LogoutIcon sx={{ marginLeft: '1rem'}}
+						<LogoutIcon sx={{ marginLeft: '1rem',  cursor:'pointer'}}
 						            onClick={() => console.log("LOGOUT")} />
 					</div>
 
