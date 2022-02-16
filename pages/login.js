@@ -40,7 +40,6 @@ function Login () {
 			>
 				<form onSubmit={handleSubmit(onSubmit)} className={styles.login__form} >
 					<Input startAdornment={<PersonIcon sx={{mr:'.5rem'}}/>}
-					       className={styles.icon}
 					       sx={{color: bg? 'black' : 'white', my:'2rem'}} placeholder={'Email'}
 					       color={'secondary'}
 					       {...register("Email", {required:true})}/>

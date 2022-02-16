@@ -1,0 +1,55 @@
+
+.container {
+    min-height: 100vh;
+    background-color: black;
+    background-image: url("/tetris-wallpaper.jpeg");
+    background-repeat: repeat-x;
+    background-position: left bottom;
+}
+
+.setting__box {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    margin: 15rem auto;
+    max-width: 330px;
+    padding: 0 1rem;
+    border-radius: 25px;
+
+    text-shadow:
+            0 0 7px #f00,
+            0 0 10px #bc13fe,
+            0 0 21px #f00,
+            0 0 42px #f00,
+            0 0 82px #bc13fe,
+            0 0 92px #bc13fe,
+            0 0 102px #f00,
+            0 0 151px #f00;
+
+    border: 0.2rem solid #fff;
+    box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem #ff0000,
+    0 0 0.8rem #bc13fe,
+    0 0 2.8rem #bc13fe,
+    inset 0 0 1.3rem #bc13fe;
+}
+
+@media only screen and (max-width: 768px) {
+    .setting__box{
+        background-color: black;
+    }
+}
+
+.username__box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.passwd__box {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}

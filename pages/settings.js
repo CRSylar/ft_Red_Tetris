@@ -1,10 +1,10 @@
 import React from 'react';
+import WithAuth from "./HOC/WithAuth";
+import SettingsComponent from "../components/SettingsComponent";
 
 function Settings () {
 	return (
-		<div>
-			{'Settings -> Building this page...'}
-		</div>
+		WithAuth(SettingsComponent)
 	);
 }
 
