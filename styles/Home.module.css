@@ -1,9 +1,11 @@
 .container {
   min-height: 100vh;
   background-color: black;
-  background-image: url("/tetris-wallpaper.jpeg");
-  background-repeat: repeat-x;
-  background-position: left bottom;
+  #background-image: url("/tetris-wallpaper.jpeg");
+  background-image: url("/3D_Tetris_Wallp.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 
 
