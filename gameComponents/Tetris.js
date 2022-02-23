@@ -13,12 +13,14 @@ const StyledTetrisWrapper = styled.div`
 
 const StledTetris = styled.div`
 	display: flex;
+	justify-content: center;
 	align-items: flex-start;
-	padding: 40px;
-	margin: 0 auto;
+	padding: 2.5rem;
+	margin: 2rem auto;
 	max-width: 900px;
 	
-	aside {
+	
+	.Aside {
 		width: 100%;
 		max-width: 200px;
 		display: block;
@@ -32,15 +34,17 @@ function Tetris (props) {
 			<StledTetris>
 
 			<Stage stage={createStage()}/>
-			{/* <Aside > */}
+			<div className={"Aside"}>
+
 				<div>
 					<Display text={"Score"}/>
 					<Display text={"Rows"}/>
 					<Display text={"Level"}/>
 				</div>
-				<StartButton />
-			{/* </Aside> */}
 
+				<StartButton />
+
+			</div>
 			</StledTetris>
 		</StyledTetrisWrapper>
 	);

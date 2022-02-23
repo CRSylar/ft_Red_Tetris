@@ -16,7 +16,7 @@ const StyledCell = styled.div`
 
 function Cell ({type}) {
 	return (
-		<StyledCell type={'L'} color={TETROMINOES['L'].color} />
+		<StyledCell type={type} color={TETROMINOES[type].color} />
 	);
 }
 
