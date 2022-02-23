@@ -1,24 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Stage from "./Stage";
 import Display from "./Display";
 import StartButton from "./StartButton";
 import {createStage} from "../gameHelpers/Utility";
 import styled from "styled-components";
+import {useTetro} from "../gameHelpers/Hooks/useTetro";
+import {useStage} from "../gameHelpers/Hooks/useStage";
 
+// Styled Components
 const StyledTetrisWrapper = styled.div`
 	width: 100vw;
 	height: 100vh;
 `
 
-
-const StledTetris = styled.div`
+const StyledTetris = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
 	padding: 2.5rem;
 	margin: 2rem auto;
 	max-width: 900px;
-	
 	
 	.Aside {
 		width: 100%;
@@ -28,24 +29,73 @@ const StledTetris = styled.div`
 	}
 `
 
-function Tetris (props) {
+function Tetris () {
+
+	const [speed, setSpeed] = useState(null);
+	const [gameOver, setGameOVer] = useState(false);
+
+	const [tetro, updateTetroPos, spawnTetro] = useTetro();
+	const [stage, setStage] = useStage(tetro);
+
+	console.log('re-render')
+
+	const moveTetro = dir => {
+		updateTetroPos({x: dir, y: 0})
+	}
+
+	const startGame = () => {
+		// Reset everything
+		setStage(createStage())
+		spawnTetro()
+	}
+
+	const drop = () => {
+		updateTetroPos({x: 0, y: 1, collided: false})
+	}
+
+	const dropTetro = () => {
+		drop()
+	}
+
+	const move = ({keyCode}) => {
+		if (gameOver)
+			return
+		switch (keyCode) {
+			case 37:
+				moveTetro(-1)
+				break;
+			case 39:
+				moveTetro(1)
+				break;
+			case 40:
+				dropTetro()
+				break;
+		}
+		console.log(keyCode)
+	}
+
 	return (
-		<StyledTetrisWrapper>
-			<StledTetris>
+		<StyledTetrisWrapper role={"button"} tabIndex={"0"}
+		                     onKeyDown={e => move(e)} >
+			<StyledTetris>
 
-			<Stage stage={createStage()}/>
+			<Stage stage={stage}/>
 			<div className={"Aside"}>
-
-				<div>
-					<Display text={"Score"}/>
-					<Display text={"Rows"}/>
-					<Display text={"Level"}/>
-				</div>
-
-				<StartButton />
+				{gameOver ?
+					(<Display gameOver={gameOver} text={'Game Over'} />)
+				:
+					(
+						<div>
+							<Display text={"Score"}/>
+							<Display text={"Rows"}/>
+							<Display text={"Level"}/>
+						</div>
+					)
+				}
+				<StartButton callback={startGame} />
 
 			</div>
-			</StledTetris>
+			</StyledTetris>
 		</StyledTetrisWrapper>
 	);
 }
