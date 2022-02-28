@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {randomTetromino} from "../../gameComponents/tetrominoes";
+import {randomTetromino, TETROMINOES} from "../../gameComponents/tetrominoes";
 import {STAGE_WIDTH} from "../Utility";
 
 
@@ -7,7 +7,7 @@ export const useTetro = () => {
 
 	const [tetro, setTetro] = useState( {
 		pos: {x: 0, y: 0},
-		tetromino: randomTetromino().shape,
+		tetromino: TETROMINOES[0].shape,
 		collided : false,
 	})
 

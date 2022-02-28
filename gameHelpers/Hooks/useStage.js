@@ -30,7 +30,7 @@ export const useStage = (tetro, spawnTetro) => {
 
 		setStage(prevState => update(prevState))
 
-	}, [tetro.collided, tetro.pos.x, tetro.pos.y, tetro.tetromino])
+	}, [tetro])
 
 	return [stage, setStage];
 }
