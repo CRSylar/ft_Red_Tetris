@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Stage from "./Stage";
 import Display from "./Display";
 import StartButton from "./StartButton";
-import {createStage} from "../gameHelpers/Utility";
+import {checkCollision, createStage} from "../gameHelpers/Utility";
 import styled from "styled-components";
 import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
@@ -40,7 +40,8 @@ function Tetris () {
 	console.log('re-render')
 
 	const moveTetro = dir => {
-		updateTetroPos({x: dir, y: 0})
+		if (!checkCollision(tetro, stage, {x: dir, y: 0}))
+			updateTetroPos({x: dir, y: 0})
 	}
 
 	const startGame = () => {

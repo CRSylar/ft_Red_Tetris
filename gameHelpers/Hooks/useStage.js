@@ -24,6 +24,10 @@ export const useStage = (tetro, spawnTetro) => {
 					}
 				})
 			})
+			// Check for collision
+			if (tetro.collided) {
+				spawnTetro()
+			}
 
 			return newStage;
 		}
