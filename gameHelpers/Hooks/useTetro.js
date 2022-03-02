@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react";
 import {randomTetromino, TETROMINOES} from "../../gameComponents/tetrominoes";
-import {STAGE_WIDTH} from "../Utility";
+import {checkCollision, STAGE_WIDTH} from "../Utility";
 
 
 export const useTetro = () => {
@@ -23,6 +23,39 @@ export const useTetro = () => {
 		}))
 	}
 
+	const rotation = (tetromino, direction) => {
+		// swap Rows & Cols
+		const rotatedTetro = tetromino.map( (_, i) =>
+			tetromino.map(col => col[i]
+			)
+		)
+
+		console.log(rotatedTetro)
+		// Reverse row ro get a rotated Tetromino
+		if (direction > 0)
+			return rotatedTetro.map(row => row.reverse())
+		return rotatedTetro.reverse
+	}
+
+	const rotateTetro = (stage, direction) => {
+		const tetroCp = JSON.parse(JSON.stringify(tetro))
+		tetroCp.tetromino = rotation(tetroCp.tetromino, direction)
+
+		const pos = tetroCp.pos.x
+		let offset = 1
+		while (checkCollision(tetroCp, stage, {x: 0, y:0})) {
+			tetroCp.pos.x += offset
+			offset = -(offset + (offset > 0 ? 1 : -1))
+			if (offset > tetroCp.tetromino[0].length) {
+				rotation(tetroCp.tetromino, -direction)
+				tetroCp.pos.x = pos
+				return
+			}
+		}
+
+		setTetro(tetroCp)
+	}
+
 	const spawnTetro = useCallback(() => {
 		setTetro({
 			pos: {
@@ -34,5 +67,5 @@ export const useTetro = () => {
 		})
 	})
 
-	return [tetro, updateTetroPos, spawnTetro];
+	return [tetro, updateTetroPos, spawnTetro, rotateTetro];
 }

@@ -34,10 +34,10 @@ function Tetris () {
 	const [speed, setSpeed] = useState(null);
 	const [gameOver, setGameOVer] = useState(false);
 
-	const [tetro, updateTetroPos, spawnTetro] = useTetro();
-	const [stage, setStage] = useStage(tetro);
+	const [tetro, updateTetroPos, spawnTetro, rotateTetro] = useTetro();
+	const [stage, setStage] = useStage(tetro, spawnTetro);
 
-	console.log('re-render')
+//	console.log('re-render')
 
 	const moveTetro = dir => {
 		if (!checkCollision(tetro, stage, {x: dir, y: 0}))
@@ -48,10 +48,20 @@ function Tetris () {
 		// Reset everything
 		setStage(createStage())
 		spawnTetro()
+		setGameOVer(false)
 	}
 
 	const drop = () => {
-		updateTetroPos({x: 0, y: 1, collided: false})
+		if (!checkCollision(tetro, stage, {x: 0, y: 1}))
+			updateTetroPos({x: 0, y: 1, collided: false})
+		else {
+			updateTetroPos({x: 0, y: 0, collided: true})
+			if (tetro.pos.y < 1) {
+				console.log("GAME OVER!")
+				setGameOVer(true)
+				setSpeed(null)
+			}
+		}
 	}
 
 	const dropTetro = () => {
@@ -70,6 +80,9 @@ function Tetris () {
 				break;
 			case 40:
 				dropTetro()
+				break;
+			case 38:
+				rotateTetro(stage, 1)
 				break;
 		}
 		console.log(keyCode)
