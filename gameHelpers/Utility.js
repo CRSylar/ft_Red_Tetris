@@ -14,9 +14,9 @@ export const checkCollision = (tetro, stage, {x: moveX, y: moveY}) => {
 	for (let y = 0; y < tetroLength; y += 1) {
 		for (let x = 0; x < tetroLength; x += 1) {
 
-			//
 			if (tetro.tetromino[y][x] !== 0) {
 				// check that movement is allowed in Y axis
+
 				if (
 				!stage[y + tetro.pos.y + moveY] ||
 					// check that movement is allowed in X axis

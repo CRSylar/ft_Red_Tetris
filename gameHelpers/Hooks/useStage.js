@@ -34,7 +34,7 @@ export const useStage = (tetro, spawnTetro) => {
 
 		setStage(prevState => update(prevState))
 
-	}, [tetro])
+	}, [tetro, spawnTetro])
 
 	return [stage, setStage];
 }

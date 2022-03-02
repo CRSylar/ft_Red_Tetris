@@ -12,11 +12,12 @@ export const useTetro = () => {
 	})
 
 	const updateTetroPos = ({x, y, collided}) => {
+
 		setTetro(prevState => ({
 			...prevState,
 			pos: {
-				x: (prevState.pos.x += x),
-				y: (prevState.pos.y += y),
+				x: (prevState.pos.x + x),
+				y: (prevState.pos.y + y),
 			},
 			collided,
 		}))
@@ -25,7 +26,7 @@ export const useTetro = () => {
 	const spawnTetro = useCallback(() => {
 		setTetro({
 			pos: {
-				x: STAGE_WIDTH / 2 - 2 ,
+				x: STAGE_WIDTH / 2,
 				y: 0
 			},
 			tetromino: randomTetromino().shape,
