@@ -4,16 +4,43 @@ import {createStage} from "../Utility";
 export const useStage = (tetro, spawnTetro) => {
 
 	const [stage, setStage] = useState(createStage())
+	const [rowsCleared, setRowsCleared] = useState(0)
+
 
 	useEffect( () => {
+		setRowsCleared(0)
+
+		// Present Stage è quello attuale
+		// NewStage in questa funzione è lo stage dopo il controllo di eliminazione riga
+		// potrebbe essere lo stesso del present se non viene eliminata nessuna riga
+		// Oppure se abbiamo eliminato 1a o + righe newStage contiene il nuovo campo
+		const sweepRows = (presentStage) =>
+			presentStage.reduce( (newStage, row) => {
+				if (row.findIndex(cell => cell[0] === 0) === -1) {
+					setRowsCleared(prevState => prevState + 1)
+					// Unshift aggiunge nellArray X nuove righe all'INIZIO, dando l'effetto che il resto
+					// scenda di X mantenendo lo Stage di dimensione costante
+					newStage.unshift(new Array(presentStage[0].length).fill([0, 'clear']))
+					return newStage
+				}
+				newStage.push(row)
+				return newStage
+			}, [] )
+
+
 		const update = prevStage => {
 
+			// A ogni iterazione devo ricalcolare tutto lo Stage per
+			// Bloccare i pezzi che sono entrati in collisione
 			const newStage = prevStage.map( row =>
 				row.map( cell => (
 					cell[1] === 'clear' ? [0, 'clear'] : cell )
 				)
 			)
 
+			// Una volta copiato lo Stage controllo le collisioni e cambio opportunamente
+			// lo stato di collisione ( solo delle celle con un valore, quelle con 0 saranno sempre Clear
+			// per poter permettere gli incastri
 			tetro.tetromino.forEach( (row, y) => {
 				row.forEach( (val, x) => {
 					if (val !== 0) {
@@ -27,6 +54,7 @@ export const useStage = (tetro, spawnTetro) => {
 			// Check for collision
 			if (tetro.collided) {
 				spawnTetro()
+				return sweepRows(newStage)
 			}
 
 			return newStage;
@@ -36,5 +64,5 @@ export const useStage = (tetro, spawnTetro) => {
 
 	}, [tetro])
 
-	return [stage, setStage];
+	return [stage, setStage, rowsCleared];
 }

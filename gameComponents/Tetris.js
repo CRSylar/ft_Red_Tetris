@@ -6,11 +6,12 @@ import {checkCollision, createStage} from "../gameHelpers/Utility";
 import styled from "styled-components";
 import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
+import {useInterval} from "../gameHelpers/Hooks/useInterval";
 
 // Styled Components
 const StyledTetrisWrapper = styled.div`
 	width: 100vw;
-	height: 100vh;
+	height: 80vh;
 `
 
 const StyledTetris = styled.div`
@@ -47,6 +48,7 @@ function Tetris () {
 	const startGame = () => {
 		// Reset everything
 		setStage(createStage())
+		setSpeed(1000)
 		spawnTetro()
 		setGameOVer(false)
 	}
@@ -64,7 +66,18 @@ function Tetris () {
 		}
 	}
 
+	const keyUp = ({keyCode}) => {
+		if (!gameOver && keyCode === 40)
+		{
+			setSpeed(1000)
+
+			console.log('speed ON')
+		}
+	}
+
 	const dropTetro = () => {
+		console.log('speed OFF')
+		setSpeed(null)
 		drop()
 	}
 
@@ -88,9 +101,13 @@ function Tetris () {
 		console.log(keyCode)
 	}
 
+	useInterval( () => {
+		drop()
+	}, speed)
+
 	return (
 		<StyledTetrisWrapper role={"button"} tabIndex={"0"}
-		                     onKeyDown={e => move(e)} >
+		                     onKeyDown={e => move(e)} onKeyUp={keyUp} >
 			<StyledTetris>
 
 			<Stage stage={stage}/>
