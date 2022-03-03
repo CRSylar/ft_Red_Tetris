@@ -12,7 +12,7 @@ import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 // Styled Components
 const StyledTetrisWrapper = styled.div`
 	width: 100vw;
-	height: 80vh;
+	height: 100vh;
 `
 
 const StyledTetris = styled.div`
@@ -20,7 +20,7 @@ const StyledTetris = styled.div`
 	justify-content: center;
 	align-items: flex-start;
 	padding: 2.5rem;
-	margin: 2rem auto;
+	margin: auto;
 	max-width: 900px;
 	
 	.Aside {
@@ -58,12 +58,13 @@ function Tetris () {
 		setLevel(0)
 	}
 
+	// Drop the Tetro by 1 line
 	const drop = () => {
-		// increase level every 10rows
-		/*if (rows > (level + 1) * 10) {
-			setLevel(prevState => prevState +1)
+		// increase level & speed every 10rows
+		if (rows > (level + 1) * 10) {
+			setLevel(prevState => prevState + 1)
 			setSpeed( 1000 / (level + 1) + 200)
-		}*/
+		}
 		//
 		if (!checkCollision(tetro, stage, {x: 0, y: 1}))
 			updateTetroPos({x: 0, y: 1, collided: false})
@@ -106,6 +107,7 @@ function Tetris () {
 		}
 	}
 
+	// Automatically drop the Tetro at specified speed
 	useInterval( () => {
 		drop()
 	}, speed)
@@ -116,6 +118,7 @@ function Tetris () {
 			<StyledTetris>
 
 			<Stage stage={stage}/>
+
 			<div className={"Aside"}>
 				{gameOver ?
 					(<Display gameOver={gameOver} text={'Game Over'} />)

@@ -18,6 +18,7 @@ export const useStage = (tetro, spawnTetro) => {
 			presentStage.reduce( (newStage, row) => {
 				if (row.findIndex(cell => cell[0] === 0) === -1) {
 					setRowsCleared(prevState => prevState + 1)
+
 					// Unshift aggiunge nellArray X nuove righe all'INIZIO, dando l'effetto che il resto
 					// scenda di X mantenendo lo Stage di dimensione costante
 					newStage.unshift(new Array(presentStage[0].length).fill([0, 'clear']))

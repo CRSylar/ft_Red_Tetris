@@ -3,7 +3,7 @@
   background-color: black;
   #background-image: url("/tetris-wallpaper.jpeg");
   background-image: url("/3D_Tetris_Wallp.png");
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: bottom;
 }
