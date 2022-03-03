@@ -1,5 +1,4 @@
 import React from 'react';
-import Box from "@mui/material/Box";
 import styled from "styled-components";
 import {TETROMINOES} from "./tetrominoes";
 
@@ -20,4 +19,4 @@ function Cell ({type}) {
 	);
 }
 
-export default Cell;
+export default React.memo(Cell);

@@ -30,11 +30,9 @@ export const useTetro = () => {
 			)
 		)
 
-		console.log(rotatedTetro)
-		// Reverse row ro get a rotated Tetromino
+		// Reverse row to get a rotated Tetromino
 		if (direction > 0)
 			return rotatedTetro.map(row => row.reverse())
-		return rotatedTetro.reverse
 	}
 
 	const rotateTetro = (stage, direction) => {

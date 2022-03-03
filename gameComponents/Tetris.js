@@ -7,6 +7,7 @@ import styled from "styled-components";
 import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
 import {useInterval} from "../gameHelpers/Hooks/useInterval";
+import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 
 // Styled Components
 const StyledTetrisWrapper = styled.div`
@@ -36,7 +37,8 @@ function Tetris () {
 	const [gameOver, setGameOVer] = useState(false);
 
 	const [tetro, updateTetroPos, spawnTetro, rotateTetro] = useTetro();
-	const [stage, setStage] = useStage(tetro, spawnTetro);
+	const [stage, setStage, rowsCleared] = useStage(tetro, spawnTetro);
+	const [score, setScore, level, setLevel, rows, setRows] = useGameStatus(rowsCleared);
 
 //	console.log('re-render')
 
@@ -51,9 +53,18 @@ function Tetris () {
 		setSpeed(1000)
 		spawnTetro()
 		setGameOVer(false)
+		setScore(0)
+		setRows(0)
+		setLevel(0)
 	}
 
 	const drop = () => {
+		// increase level every 10rows
+		/*if (rows > (level + 1) * 10) {
+			setLevel(prevState => prevState +1)
+			setSpeed( 1000 / (level + 1) + 200)
+		}*/
+		//
 		if (!checkCollision(tetro, stage, {x: 0, y: 1}))
 			updateTetroPos({x: 0, y: 1, collided: false})
 		else {
@@ -68,15 +79,10 @@ function Tetris () {
 
 	const keyUp = ({keyCode}) => {
 		if (!gameOver && keyCode === 40)
-		{
-			setSpeed(1000)
-
-			console.log('speed ON')
-		}
+			setSpeed(1000 / (level + 1) + 200)
 	}
 
 	const dropTetro = () => {
-		console.log('speed OFF')
 		setSpeed(null)
 		drop()
 	}
@@ -98,7 +104,6 @@ function Tetris () {
 				rotateTetro(stage, 1)
 				break;
 		}
-		console.log(keyCode)
 	}
 
 	useInterval( () => {
@@ -117,9 +122,9 @@ function Tetris () {
 				:
 					(
 						<div>
-							<Display text={"Score"}/>
-							<Display text={"Rows"}/>
-							<Display text={"Level"}/>
+							<Display text={`Score: ${score}`}/>
+							<Display text={`Rows: ${rows}`}/>
+							<Display text={`Level: ${level}`}/>
 						</div>
 					)
 				}
