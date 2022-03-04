@@ -10,12 +10,16 @@ export const useStage = (tetro, spawnTetro) => {
 	useEffect( () => {
 		setRowsCleared(0)
 
+
 		// Present Stage è quello attuale
 		// NewStage in questa funzione è lo stage dopo il controllo di eliminazione riga
 		// potrebbe essere lo stesso del present se non viene eliminata nessuna riga
 		// Oppure se abbiamo eliminato 1a o + righe newStage contiene il nuovo campo
 		const sweepRows = (presentStage) =>
 			presentStage.reduce( (newStage, row) => {
+
+				// cerchiamo almeno una volta il valore 0 (cella vuota) nella riga
+				// se non presente ( -1 ) allora la riga è completa e va rimossa
 				if (row.findIndex(cell => cell[0] === 0) === -1) {
 					setRowsCleared(prevState => prevState + 1)
 
@@ -24,6 +28,8 @@ export const useStage = (tetro, spawnTetro) => {
 					newStage.unshift(new Array(presentStage[0].length).fill([0, 'clear']))
 					return newStage
 				}
+				// altrimenti inseriamo la riga cosi com'é nello stage che stiamo ridisegnando e passiamo
+				// alla riga successiva
 				newStage.push(row)
 				return newStage
 			}, [] )

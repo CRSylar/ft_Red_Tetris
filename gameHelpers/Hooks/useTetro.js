@@ -36,11 +36,16 @@ export const useTetro = () => {
 	}
 
 	const rotateTetro = (stage, direction) => {
+		// Copia Profonda del tetro per modifica
 		const tetroCp = JSON.parse(JSON.stringify(tetro))
 		tetroCp.tetromino = rotation(tetroCp.tetromino, direction)
 
 		const pos = tetroCp.pos.x
 		let offset = 1
+		// Controllo su tutta la riga se la rotazione del tetro causa una sovrapposizione
+		// ( non posso rotare), il ciclo while serve per "allargare" la ricerca da 1 cella a + celle
+		// intorno al pezzo da ruotare, se OFFSET diventa > della Grandezza del pezzo significa che ho trovato
+		// impedimenti alla rotazione ALMENO fino a quella grandezza quindi non posso ruotare
 		while (checkCollision(tetroCp, stage, {x: 0, y:0})) {
 			tetroCp.pos.x += offset
 			offset = -(offset + (offset > 0 ? 1 : -1))
@@ -54,10 +59,11 @@ export const useTetro = () => {
 		setTetro(tetroCp)
 	}
 
+	// Spawn di un Pezzo random in posizione centrale
 	const spawnTetro = useCallback(() => {
 		setTetro({
 			pos: {
-				x: STAGE_WIDTH / 2,
+				x: STAGE_WIDTH / 2 - 2,
 				y: 0
 			},
 			tetromino: randomTetromino().shape,

@@ -42,6 +42,7 @@ function Tetris () {
 
 //	console.log('re-render')
 
+	// Movimento laterale del Tetro
 	const moveTetro = dir => {
 		if (!checkCollision(tetro, stage, {x: dir, y: 0}))
 			updateTetroPos({x: dir, y: 0})
@@ -65,11 +66,12 @@ function Tetris () {
 			setLevel(prevState => prevState + 1)
 			setSpeed( 1000 / (level + 1) + 200)
 		}
-		//
+		// controllo collisione
 		if (!checkCollision(tetro, stage, {x: 0, y: 1}))
 			updateTetroPos({x: 0, y: 1, collided: false})
 		else {
 			updateTetroPos({x: 0, y: 0, collided: true})
+			// Check se la collisione porta a un game over in caso siamo arrivati in cima alla griglia
 			if (tetro.pos.y < 1) {
 				console.log("GAME OVER!")
 				setGameOVer(true)
@@ -78,29 +80,38 @@ function Tetris () {
 		}
 	}
 
+	// Al Rilascio del tasto DOWN riattiviamo la velocita del tetro
+	// per il movimento "automatico"
 	const keyUp = ({keyCode}) => {
 		if (!gameOver && keyCode === 40)
 			setSpeed(1000 / (level + 1) + 200)
 	}
 
+	// Usando DOWN il tetro scende di 1 riga, per evitare doppi movimenti
+	// imposto la velocita momentaneamente a 0
 	const dropTetro = () => {
 		setSpeed(null)
 		drop()
 	}
 
+	// Movimento del Tetro
 	const move = ({keyCode}) => {
 		if (gameOver)
 			return
 		switch (keyCode) {
+			// LEFT
 			case 37:
 				moveTetro(-1)
 				break;
+			// RIGHT
 			case 39:
 				moveTetro(1)
 				break;
+			// DOWN
 			case 40:
 				dropTetro()
 				break;
+			// UP
 			case 38:
 				rotateTetro(stage, 1)
 				break;
