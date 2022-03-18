@@ -13,8 +13,20 @@ function Newuser () {
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-	const onSubmit = (data) => {
-		console.log(data)
+	const onSubmit = async ({Username, email, Password}) => {
+
+		const res = await fetch('/api/signUp', {
+			method: "POST",
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				Username,
+				email,
+				Password,
+			})
+		})
+
+		const jsonRes = await res.json()
+		console.log(jsonRes)
 		reset()
 	}
 
