@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import prisma from "../../lib/prisma";
+import errorDispatcher from "../../lib/errorDispatcher";
 
 export default async function handler(req, res) {
 
@@ -17,8 +18,6 @@ export default async function handler(req, res) {
 		delete user.password
 		res.status(201).json({user})
 	} catch (e) {
-		console.log(e)
-		res.status(500).json({code:'PrismaError'})
+		errorDispatcher(res,e)
 	}
-	res.end()
 }

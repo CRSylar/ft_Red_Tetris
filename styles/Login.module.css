@@ -1,9 +1,6 @@
 
 .main {
-    background-color: black;
-    background-image: url("/tetris-wallpaper.jpeg");
-    background-repeat: repeat-x;
-    background-position: left bottom;
+    background-color: #161525;
     min-height: 100vh;
     justify-content: center;
     flex-direction: column;
@@ -23,7 +20,10 @@
     0 0 0.4rem #ff0000,
     0 0 1.6rem #ff0000,
     inset 0 0 .7rem #bc13fe;
+
 }
+
+
 
 .login__box:hover {
     background-color: gainsboro;
@@ -40,7 +40,7 @@
     text-transform: none;
 }
 .login__submit:hover {
-    background-color: black;
+    background-color: #161525;
     color: gainsboro;
 }
 

@@ -24,9 +24,13 @@ function Newuser () {
 				Password,
 			})
 		})
-
-		const jsonRes = await res.json()
-		console.log(jsonRes)
+		if (res.status !== 201) {
+			const {message} = await res.json()
+			if (message.search('email') !== -1)
+				window.alert('Email address already in use')
+			else
+				console.error(res.status, message)
+		}
 		reset()
 	}
 
