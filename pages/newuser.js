@@ -7,9 +7,11 @@ import PasswordIcon from "@mui/icons-material/Password";
 import {Button} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
+import {useRouter} from "next/router";
 
 function Newuser () {
 
+	const router = useRouter()
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -32,6 +34,7 @@ function Newuser () {
 				console.error(res.status, message)
 		}
 		reset()
+		router.push('/home')
 	}
 
 	return (
