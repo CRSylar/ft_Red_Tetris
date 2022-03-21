@@ -22,7 +22,7 @@ async function handler (req, res) {
 				email: user.email,
 			}
 			const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 8600}, {})
-			res.cookie('Red_Tetris', token , {path:'/', httpOnly:true})
+			res.cookie('Red_Tetris', token , {path:'/', httpOnly:true, maxAge: 86000})
 			res.status(200).json(user)
 		}
 		else

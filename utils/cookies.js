@@ -1,7 +1,6 @@
 import { serialize } from "cookie";
 
 const cookie = (res, name, value, options = {}) => {
-	console.log('V: ', value, '\nOPT: ', options)
 	const stringValue =
 		typeof value === 'object' ? 'j: ' + JSON.stringify(value) : String(value);
 
@@ -10,6 +9,10 @@ const cookie = (res, name, value, options = {}) => {
 		options.maxAge /= 1000
 	}
 
+	if ('logout' in options) {
+		options.expires = new Date(0)
+		options.maxAge = -1
+	}
 	res.setHeader('Set-Cookie', serialize(name, String(stringValue), options))
 }
 

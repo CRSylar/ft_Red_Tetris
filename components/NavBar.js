@@ -18,6 +18,11 @@ function NavBar () {
 		router.push(`/profile/${data.searchBox}`)
 	}
 
+	const handleLogout = async () => {
+		fetch('/api/logOut')
+			.then(router.reload)
+	}
+
 	return (
 		<div className={styles.container}>
 				<div className={styles.main}>
@@ -48,7 +53,7 @@ function NavBar () {
 						<ManageAccountsIcon sx={{ marginLeft: '1rem', cursor:'pointer'}}
 						                    onClick={() => router.push('/settings')}  />
 						<LogoutIcon sx={{ marginLeft: '1rem',  cursor:'pointer'}}
-						            onClick={() => console.log("LOGOUT")} />
+						            onClick={handleLogout} />
 					</div>
 
 				</div>

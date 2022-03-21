@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import {createTheme} from "@mui/material";
 import {ThemeProvider} from '@mui/material/styles'
 import tetrisContext from "../utils/tetrisContext";
-import {useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 
 const theme = createTheme({
@@ -19,6 +19,19 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }) {
 
   const [user, setUser] = useState({})
+
+  const fetchUser = useCallback(async () => {
+    const res = await fetch('/api/validate')
+    if (res.status === 200) {
+      const jsonRes = await res.json()
+      setUser(jsonRes)
+    } else
+      setUser({})
+  }, [])
+
+  useEffect( () => {
+    fetchUser()
+  }, [fetchUser])
 
   return (
     <tetrisContext.Provider value={{user, setUser}}>

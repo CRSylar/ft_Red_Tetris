@@ -32,10 +32,9 @@ function Login () {
 			})
 		})
 		const jsonRes = await res.json()
-		value.setUser(jsonRes)
 		if (res.status === 200) {
-			/* TODO STORE USER IN REDUX | CONTEXT */
-			router.push('/home')
+			value.setUser(jsonRes)
+			await router.push('/home')
 		}
 		else if (res.status === 404) {
 			setSeverity(jsonRes.status)
