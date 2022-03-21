@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import Favico from "./Favico";
 import NavBar from "./NavBar";
 import styles from "../styles/Home.module.css"
 import Box from "@mui/material/Box";
 import {Backdrop, Fade, Modal, Typography} from "@mui/material";
 import SocketIOClient from "socket.io-client"
+
 
 function HomeComponent () {
 
@@ -36,6 +37,7 @@ function HomeComponent () {
 
 		if (socket) return () => socket.disconnect()
 	}, [])
+
 
 	return (
 		<div className={styles.container}>

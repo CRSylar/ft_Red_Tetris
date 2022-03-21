@@ -1,26 +1,58 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import styles from '/styles/Login.module.css';
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
 import Input from "@mui/material/Input";
-import {Button} from "@mui/material";
+import {Alert, Button, Snackbar} from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
 import Favico from "../components/Favico";
 import {useRouter} from "next/router";
+import tetrisContext from "../utils/tetrisContext";
 
 function Login () {
 
+	const value = useContext(tetrisContext)
 	const router = useRouter()
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
 	const [bg, setBg] = useState(false)
+	const [open, setOpen] = useState(false)
+	const [alertMessage, setAlertMessage] = useState("")
+	const [severity, setSeverity] = useState("info")
 
-	const onSubmit = (data) => {
-		console.log(data)
+	const onSubmit = async ({Email, Password}) => {
+
+		const res = await fetch('/api/logIn', {
+			method: "POST",
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				Email,
+				Password,
+			})
+		})
+		const jsonRes = await res.json()
+		value.setUser(jsonRes)
+		if (res.status === 200) {
+			/* TODO STORE USER IN REDUX | CONTEXT */
+			router.push('/home')
+		}
+		else if (res.status === 404) {
+			setSeverity(jsonRes.status)
+			setAlertMessage(jsonRes.message)
+			setOpen(true)
+		}
+		else if (res.status === 401) {
+			setSeverity(jsonRes.status)
+			setAlertMessage(jsonRes.message)
+			setOpen(true)
+		}
 		reset()
 	}
 
+	const handleClose = () => {
+		setOpen(false)
+	}
 
 	return (
 		<div className={styles.main}>
@@ -57,6 +89,11 @@ function Login () {
 				</form>
 				{errors.Password && (<p className={styles.errorMsg}>{errors.Password.message}</p>)}
 			</Box>
+			<Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{vertical:'bottom', horizontal:'center'}}>
+				<Alert onClose={handleClose} variant={'filled'} severity={severity}>
+					{alertMessage}
+				</Alert>
+			</Snackbar>
 		</div>
 	);
 }
