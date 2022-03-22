@@ -1,9 +1,7 @@
 import '../styles/globals.css'
 import {createTheme} from "@mui/material";
 import {ThemeProvider} from '@mui/material/styles'
-import tetrisContext from "../utils/tetrisContext";
-import {useCallback, useEffect, useState} from "react";
-
+import {RecoilRoot} from "recoil";
 
 const theme = createTheme({
   palette: {
@@ -18,27 +16,12 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }) {
 
-  const [user, setUser] = useState({})
-
-  const fetchUser = useCallback(async () => {
-    const res = await fetch('/api/validate')
-    if (res.status === 200) {
-      const jsonRes = await res.json()
-      setUser(jsonRes)
-    } else
-      setUser({})
-  }, [])
-
-  useEffect( () => {
-    fetchUser()
-  }, [fetchUser])
-
   return (
-    <tetrisContext.Provider value={{user, setUser}}>
+    <RecoilRoot>
       <ThemeProvider theme={theme}>
         <Component {...pageProps} />
       </ThemeProvider>
-    </tetrisContext.Provider>
+    </RecoilRoot>
   )
 }
 

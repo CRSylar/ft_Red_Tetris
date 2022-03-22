@@ -1,10 +1,12 @@
-import React, { useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Favico from "./Favico";
 import NavBar from "./NavBar";
 import styles from "../styles/Home.module.css"
 import Box from "@mui/material/Box";
 import {Backdrop, Fade, Modal, Typography} from "@mui/material";
 import SocketIOClient from "socket.io-client"
+import {useRecoilState} from "recoil";
+import {userState} from "../utils/userAtom";
 
 
 function HomeComponent () {
@@ -12,6 +14,20 @@ function HomeComponent () {
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
+	const [_, setUser] = useRecoilState(userState)
+
+	const fetchUser = useCallback( async () =>{
+		const res = await fetch('/api/validate')
+		let user = {}
+		if (res.status === 200) {
+			user = await res.json()
+		}
+		setUser(user)
+	},[setUser])
+
+	useEffect( () => {
+		fetchUser()
+	}, [fetchUser])
 
 	const ModalStyle = {
 		position: 'absolute',
@@ -37,7 +53,6 @@ function HomeComponent () {
 
 		if (socket) return () => socket.disconnect()
 	}, [])
-
 
 	return (
 		<div className={styles.container}>

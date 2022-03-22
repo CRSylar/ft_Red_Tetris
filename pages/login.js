@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import styles from '/styles/Login.module.css';
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
@@ -8,11 +8,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import PasswordIcon from '@mui/icons-material/Password';
 import Favico from "../components/Favico";
 import {useRouter} from "next/router";
-import tetrisContext from "../utils/tetrisContext";
+import {userState} from "../utils/userAtom";
+import {useRecoilState} from "recoil";
 
 function Login () {
 
-	const value = useContext(tetrisContext)
 	const router = useRouter()
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -20,6 +20,7 @@ function Login () {
 	const [open, setOpen] = useState(false)
 	const [alertMessage, setAlertMessage] = useState("")
 	const [severity, setSeverity] = useState("info")
+	const [_, setUser] = useRecoilState(userState)
 
 	const onSubmit = async ({Email, Password}) => {
 
@@ -33,7 +34,7 @@ function Login () {
 		})
 		const jsonRes = await res.json()
 		if (res.status === 200) {
-			value.setUser(jsonRes)
+			setUser(jsonRes)
 			await router.push('/home')
 		}
 		else if (res.status === 404) {
