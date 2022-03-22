@@ -3,6 +3,7 @@ import styles from "../styles/Newuser.module.css";
 import Favico from "../components/Favico";
 import Input from "@mui/material/Input";
 import PersonIcon from "@mui/icons-material/Person";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PasswordIcon from "@mui/icons-material/Password";
 import {Button} from "@mui/material";
 import Box from "@mui/material/Box";
@@ -44,6 +45,11 @@ function Newuser () {
 				<h1 className={styles.login__neon}>
 					{'Sign-Up '}
 				</h1>
+			</div>
+
+			<div className={styles.backArrow}
+			     onClick={ () => router.back()} >
+				<ArrowBackIcon/>
 			</div>
 
 			<Box className={styles.signup__box}>

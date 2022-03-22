@@ -1,10 +1,7 @@
 
 .container {
     min-height: 100vh;
-    background-color: black;
-    background-image: url("/tetris-wallpaper.jpeg");
-    background-repeat: repeat-x;
-    background-position: left bottom;
+    background-color: #161525;
 }
 
 .setting__box {
@@ -37,7 +34,7 @@
 
 @media only screen and (max-width: 768px) {
     .setting__box{
-        background-color: black;
+        background-color: #161525;
     }
 }
 

@@ -79,3 +79,20 @@
     display: inline;
     content: "⚠ ";
 }
+
+.backArrow {
+    width: 2rem;
+    color: white;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    margin: -2rem 0;
+
+    box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem #0000ff,
+    0 0 0.8rem #0250ad,
+    0 0 2.8rem #0250ad,
+    inset 0 0 1.3rem #0250ad;
+
+}

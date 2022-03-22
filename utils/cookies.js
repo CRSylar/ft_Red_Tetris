@@ -6,7 +6,6 @@ const cookie = (res, name, value, options = {}) => {
 
 	if ('maxAge' in options) {
 		options.expires = new Date(Date.now() + options.maxAge)
-		options.maxAge /= 1000
 	}
 
 	if ('logout' in options) {

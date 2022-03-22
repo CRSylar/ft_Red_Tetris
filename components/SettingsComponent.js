@@ -42,8 +42,8 @@ function SettingsComponent ({id}) {
 						       {...register("username", {required:true})}/>
 					<Button type={"submit"}
 					        sx={{color:'gray', textTransform:'none', marginLeft:'2rem',
-						        backgroundColor: 'black',
-						        ":hover":{color:'white', textShadow:'0 0 7px #f00,' +
+						        backgroundColor: '#161525',
+						        ":hover":{color:'white', borderRadius: '20%', textShadow:'0 0 7px #f00,' +
 								        '0 0 10px #bc13fe,' +
 								        '0 0 21px #f00,' +
 								        '0 0 42px #f00,' +
@@ -74,8 +74,8 @@ function SettingsComponent ({id}) {
 							</div>
 							<Button type={"submit"}
 							        sx={{color:'gray', textTransform:'none', marginLeft:'1rem',
-								        backgroundColor: 'black',
-								        ":hover":{color:'white', textShadow:'0 0 7px #f00,' +
+								        backgroundColor: '#161525',
+								        ":hover":{color:'white', borderRadius: '20%', textShadow:'0 0 7px #f00,' +
 										        '0 0 10px #bc13fe,' +
 										        '0 0 21px #f00,' +
 										        '0 0 42px #f00,' +
