@@ -80,7 +80,8 @@ function Login () {
 						color={'secondary'}
 						type={'password'}
 						sx={{color: bg? 'black' : 'white', mb:'2rem'}}
-						placeholder={'Password'} {...register("Password",
+						placeholder={'Password'}
+						{...register("Password",
 						{required: 'Password is required',
 							pattern: { value: strongRegex,
 								message: 'Something Wrong, please check'

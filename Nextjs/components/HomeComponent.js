@@ -3,10 +3,12 @@ import Favico from "./Favico";
 import NavBar from "./NavBar";
 import styles from "../styles/Home.module.css"
 import Box from "@mui/material/Box";
-import {Backdrop, Fade, Modal, Typography} from "@mui/material";
+import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
+import {Backdrop, Fade, Input, Modal, Typography} from "@mui/material";
 import io from "socket.io-client"
 import {useRecoilState} from "recoil";
 import {userState} from "../utils/userAtom";
+import {useForm} from "react-hook-form";
 
 let socket = null
 function HomeComponent () {
@@ -16,6 +18,7 @@ function HomeComponent () {
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
 	const handleRoomModal = () => setRoomModal(true)
+	const { register, handleSubmit, formState: {errors} } = useForm();
 	const [_, setUser] = useRecoilState(userState)
 
 	const fetchUser = useCallback( async () =>{
@@ -26,6 +29,10 @@ function HomeComponent () {
 		}
 		setUser(user)
 	},[setUser])
+
+	const onSubmit = ({roomName}) => {
+		console.log('R: ', roomName)
+	}
 
 	useEffect( () => {
 		fetchUser()
@@ -78,7 +85,15 @@ function HomeComponent () {
 			       }} >
 				<Fade in={roomModal}>
 					<Box sx={ModalStyle}>
-						{'TEST'}
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<Input startAdornment={<VideogameAssetIcon sx={{mr: '0.5rem' }}/>}
+							       placeholder={'Room name...'}
+							       sx={{color: 'black'}}
+							       {...register("roomName", {
+											 required:true,
+							       pattern: {value: new RegExp('^[a-zA-Z]+$')}})}/> {/* Pattern to match String made by letters only */}
+						</form>
+						{errors.roomName && (<p className={styles.errorMsg}>{'Room Name must be only Letters [a-zA-Z]'}</p>)}
 					</Box>
 				</Fade>
 			</Modal>

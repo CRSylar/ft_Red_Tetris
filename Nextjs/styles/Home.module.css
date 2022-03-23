@@ -141,3 +141,11 @@
   0 0 2.8rem #0eaf5d,
   inset 0 0 1.3rem #0eaf5d;
 }
+
+.errorMsg {
+    color: darkred;
+}
+.errorMsg:before {
+    display: inline;
+    content: "⚠ ";
+}
