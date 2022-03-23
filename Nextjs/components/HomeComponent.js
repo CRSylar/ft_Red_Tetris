@@ -8,13 +8,14 @@ import io from "socket.io-client"
 import {useRecoilState} from "recoil";
 import {userState} from "../utils/userAtom";
 
-
+let socket = null
 function HomeComponent () {
 
-//	const socket = io('http://localhost:3000')
 	const [open, setOpen] = useState(false);
+	const [roomModal, setRoomModal] = useState(false)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
+	const handleRoomModal = () => setRoomModal(true)
 	const [_, setUser] = useRecoilState(userState)
 
 	const fetchUser = useCallback( async () =>{
@@ -29,6 +30,18 @@ function HomeComponent () {
 	useEffect( () => {
 		fetchUser()
 	}, [fetchUser])
+
+	useEffect( () => {
+		if (!socket) {
+			socket = io('http://localhost:8080/', {
+				transports: ['websocket']
+			})
+		}
+		/*  Socket manual connection & disconnection
+		if (!socket.connected) socket.connect()
+		if (socket) return () => socket.disconnect()
+		*/
+	},[])
 
 	const ModalStyle = {
 		position: 'absolute',
@@ -52,9 +65,23 @@ function HomeComponent () {
 			{/* START NEW GAME */}
 			<div className={styles.play__box}>
 				<h1 className={styles.play__button}
-				    onClick={() => console.log('Room Creation !')}  >
+				    onClick={handleRoomModal} >
 				{'Play'}</h1>
 			</div>
+
+			<Modal open={roomModal}
+			       onClose={() => setRoomModal(false)}
+			       closeAfterTransition
+			       BackdropComponent={Backdrop}
+			       BackdropProps={{
+							 timeout: 500,
+			       }} >
+				<Fade in={roomModal}>
+					<Box sx={ModalStyle}>
+						{'TEST'}
+					</Box>
+				</Fade>
+			</Modal>
 
 			{/* RULES & SETTINGS */}
 

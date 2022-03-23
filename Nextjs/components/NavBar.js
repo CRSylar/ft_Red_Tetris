@@ -28,7 +28,7 @@ function NavBar () {
 				<div className={styles.main}>
 					{/* LOGO */}
 					<div className={styles.logo} onClick={() => router.push('/home')}>
-						<Image src={tetris} className={styles.imgLogo} alt={"Red_tetris"} width={60} height={60}/>
+						<Image src={tetris} className={styles.imgLogo} alt={"Red_tetris"} width={60} height={60}  />
 					</div>
 
 					{/* SearchBox */}

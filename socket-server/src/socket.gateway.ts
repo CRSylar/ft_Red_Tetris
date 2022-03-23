@@ -7,7 +7,7 @@ import {
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
 
-@WebSocketGateway({transport: ['websocket']})
+@WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
 export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer() server: Server
