@@ -90,7 +90,7 @@ function HomeComponent () {
 							       placeholder={'Room name...'}
 							       sx={{color: 'black'}}
 							       {...register("roomName", {
-											 required:true,
+											 required: true,
 							       pattern: {value: new RegExp('^[a-zA-Z]+$')}})}/> {/* Pattern to match String made by letters only */}
 						</form>
 						{errors.roomName && (<p className={styles.errorMsg}>{'Room Name must be only Letters [a-zA-Z]'}</p>)}
