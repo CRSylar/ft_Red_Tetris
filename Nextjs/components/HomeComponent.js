@@ -5,21 +5,21 @@ import styles from "../styles/Home.module.css"
 import Box from "@mui/material/Box";
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import {Backdrop, Fade, Input, Modal, Typography} from "@mui/material";
-import io from "socket.io-client"
 import {useRecoilState} from "recoil";
 import {userState} from "../utils/userAtom";
 import {useForm} from "react-hook-form";
+import {useRouter} from "next/router";
 
-let socket = null
 function HomeComponent () {
 
+	const router = useRouter()
 	const [open, setOpen] = useState(false);
 	const [roomModal, setRoomModal] = useState(false)
+	const { register, handleSubmit, reset, formState: {errors} } = useForm();
+	const [user, setUser] = useRecoilState(userState)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
 	const handleRoomModal = () => setRoomModal(true)
-	const { register, handleSubmit, formState: {errors} } = useForm();
-	const [_, setUser] = useRecoilState(userState)
 
 	const fetchUser = useCallback( async () =>{
 		const res = await fetch('/api/validate')
@@ -30,25 +30,16 @@ function HomeComponent () {
 		setUser(user)
 	},[setUser])
 
-	const onSubmit = ({roomName}) => {
-		console.log('R: ', roomName)
+	const onSubmit = async ({roomName}) => {
+			reset()
+			router.push({
+				pathname: '/match',
+				query :  `${roomName}[${user.username}]` })
 	}
 
 	useEffect( () => {
 		fetchUser()
 	}, [fetchUser])
-
-	useEffect( () => {
-		if (!socket) {
-			socket = io('http://localhost:8080/', {
-				transports: ['websocket']
-			})
-		}
-		/*  Socket manual connection & disconnection
-		if (!socket.connected) socket.connect()
-		if (socket) return () => socket.disconnect()
-		*/
-	},[])
 
 	const ModalStyle = {
 		position: 'absolute',

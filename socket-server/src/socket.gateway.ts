@@ -1,7 +1,7 @@
 import {
 	OnGatewayConnection,
 	OnGatewayDisconnect,
-	OnGatewayInit,
+	OnGatewayInit, SubscribeMessage,
 	WebSocketGateway, WebSocketServer,
 } from '@nestjs/websockets';
 import {Socket, Server } from "socket.io";
@@ -24,4 +24,11 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	handleDisconnect(client : Socket) : any {
 		this.logger.log('Client Disconnected: ', client.id)
 	}
+
+	@SubscribeMessage('createRoom')
+	createRoomRequest(client: Socket, payload: string) {
+		client.join(payload)
+		this.server.to(payload).emit('Welcome', `Sei Entrato nella Lobby: ${ payload }`)
+	}
+
 }
