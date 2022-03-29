@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Tetris from "../gameComponents/Tetris";
 import styles from "../styles/Match.module.css"
 import {useRouter} from "next/router";
@@ -9,6 +9,7 @@ let socket = null
 function MatchComponent () {
 
 	const {query} = useRouter()
+	const [host, setHost] = useState(false)
 
 	useEffect( () => {
 		if (!socket) {
@@ -16,9 +17,15 @@ function MatchComponent () {
 				transports: ['websocket']
 			})
 			const lobby = Object.keys(query)[0].split('[')
-			console.log("Lobby OBJT",lobby)
-			socket.emit('createRoom', )
-			socket.on('Welcome', (payload) => console.log(payload))
+			socket.emit('joinRoom', lobby[0] )
+			socket.on('Welcome', ({msg, payload}) => {
+				console.log(msg)
+				setHost(payload)
+			})
+			socket.on('Created', ({msg, payload}) => {
+				console.log(msg)
+				setHost(payload)
+				})
 		}
 
 		if (socket) return () => socket.disconnect()

@@ -25,10 +25,26 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		this.logger.log('Client Disconnected: ', client.id)
 	}
 
-	@SubscribeMessage('createRoom')
+	@SubscribeMessage('joinRoom')
 	createRoomRequest(client: Socket, payload: string) {
-		client.join(payload)
-		this.server.to(payload).emit('Welcome', `Sei Entrato nella Lobby: ${ payload }`)
+		// Check if the room exist in this object
+		const rooms = this.server.sockets.adapter.rooms
+		if ( rooms.get(payload)?.size ) {
+			this.logger.log('Joined')
+			client.join(payload)
+			this.server.to(payload).emit('Welcome', {
+				msg: `Sei Entrato nella Lobby: ${ payload }`,
+				payload: false,
+			})
+		}
+		else {
+			this.logger.log('Created')
+			client.join(payload)
+			this.server.to(payload).emit('Created', {
+				msg: `Sei il Propietario della Lobby: ${ payload }`,
+				payload: true,
+			})
+		}
 	}
 
 }
