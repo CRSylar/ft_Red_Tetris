@@ -53,9 +53,7 @@ export const TETROMINOES = {
 }
 
 
-export const randomTetromino = () => {
-	const tetrominos = 'IJLOSTZ'
-	const randTetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)]
+export const selectTetromino = (chunk) => {
 
-	return TETROMINOES[randTetromino]
+	return TETROMINOES[chunk]
 }

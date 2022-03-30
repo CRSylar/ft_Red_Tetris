@@ -6,6 +6,7 @@ import {
 } from '@nestjs/websockets';
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
+import { generateChunks } from './Utils';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
 export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -45,6 +46,14 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				payload: true,
 			})
 		}
+	}
+
+	@SubscribeMessage('startGameReq')
+	startGame(client: Socket, payload: {room: string}) {
+		console.log("Richiesta di start da : ", client.id, "nella Room: ", payload.room)
+		const chunks = generateChunks()
+		console.log('Chunks: ', chunks)
+		this.server.to(payload.room).emit('startGame', {chunks})
 	}
 
 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Stage from "./Stage";
 import Display from "./Display";
 import StartButton from "./StartButton";
@@ -8,6 +8,13 @@ import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
 import {useInterval} from "../gameHelpers/Hooks/useInterval";
 import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
+import {useRouter} from "next/router";
+import io from "socket.io-client";
+
+// Socket.io Instance
+let socket = null
+
+export const gameInfo = {allChunks: [] , idx: 0, collision: false }
 
 // Styled Components
 const StyledTetrisWrapper = styled.div`
@@ -30,7 +37,7 @@ const StyledTetris = styled.div`
 		padding: 0 20px;
 	}
 `
-
+// Main Function of Game
 function Tetris () {
 
 	const [speed, setSpeed] = useState(null);
@@ -40,7 +47,47 @@ function Tetris () {
 	const [stage, setStage, rowsCleared] = useStage(tetro, spawnTetro);
 	const [score, setScore, level, setLevel, rows, setRows] = useGameStatus(rowsCleared);
 
-//	console.log('re-render')
+	const {query} = useRouter()
+	const Tlobby = Object.keys(query)[0]?.split('[')[0]
+	const [host, setHost] = useState(false)
+
+	// Connessione al WebSocket
+	useEffect( () => {
+		if (!socket) {
+			socket = io('http://localhost:8080/', {
+				transports: ['websocket']
+			})
+			socket.emit('joinRoom', Tlobby )
+			socket.on('Welcome', ({msg, payload}) => {
+				console.log(msg)
+				setHost(payload)
+			})
+			socket.on('Created', ({msg, payload}) => {
+				console.log(msg)
+				setHost(payload)
+				socket.off('Welcome')
+			})
+			socket.on('startGame', ({chunks}) => {
+				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
+				startGame()
+			})
+		}
+
+		if (socket) return () => socket.disconnect()
+	}, [Tlobby, query, startGame])
+
+	useEffect( () => {
+		if (gameInfo.collision){
+			gameInfo.idx++
+			gameInfo.collision = false
+		}
+	}, [gameInfo.collision])
+
+	// Emitters
+	const emitStartGame = () => {
+		socket?.emit('startGameReq', {room: Tlobby})
+	}
+
 
 	// Movimento laterale del Tetro
 	const moveTetro = dir => {
@@ -48,16 +95,16 @@ function Tetris () {
 			updateTetroPos({x: dir, y: 0})
 	}
 
-	const startGame = () => {
+	const startGame = useCallback(() => {
 		// Reset everything
 		setStage(createStage())
 		setSpeed(1000)
-		spawnTetro()
+		spawnTetro(gameInfo.allChunks[gameInfo.idx++])
 		setGameOVer(false)
 		setScore(0)
 		setRows(0)
 		setLevel(0)
-	}
+	}, [setLevel, setRows, setScore, setStage, spawnTetro])
 
 	// Drop the Tetro by 1 line
 	const drop = () => {
@@ -142,7 +189,12 @@ function Tetris () {
 						</div>
 					)
 				}
-				<StartButton callback={startGame} />
+				{host ? (
+					<StartButton callback={emitStartGame} />
+					)
+				: (
+					<span style={{color:"white"}}>{'The game will start when the Host player is ready'}</span>
+					)}
 
 			</div>
 			</StyledTetris>

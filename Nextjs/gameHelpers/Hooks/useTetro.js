@@ -1,7 +1,6 @@
 import {useCallback, useState} from "react";
-import {randomTetromino, TETROMINOES} from "../../gameComponents/tetrominoes";
+import {selectTetromino, TETROMINOES} from "../../gameComponents/tetrominoes";
 import {checkCollision, STAGE_WIDTH} from "../Utility";
-
 
 export const useTetro = () => {
 
@@ -60,16 +59,16 @@ export const useTetro = () => {
 	}
 
 	// Spawn di un Pezzo random in posizione centrale
-	const spawnTetro = useCallback(() => {
+	const spawnTetro = useCallback((chunk) => {
 		setTetro({
 			pos: {
 				x: STAGE_WIDTH / 2 - 2,
 				y: 0
 			},
-			tetromino: randomTetromino().shape,
+			tetromino: selectTetromino(chunk).shape,
 			collided : false,
 		})
-	})
+	}, [])
 
 	return [tetro, updateTetroPos, spawnTetro, rotateTetro];
 }

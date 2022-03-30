@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {createStage} from "../Utility";
+import { gameInfo} from "../../gameComponents/Tetris";
 
 export const useStage = (tetro, spawnTetro) => {
 
@@ -9,7 +10,6 @@ export const useStage = (tetro, spawnTetro) => {
 
 	useEffect( () => {
 		setRowsCleared(0)
-
 
 		// Present Stage è quello attuale
 		// NewStage in questa funzione è lo stage dopo il controllo di eliminazione riga
@@ -60,7 +60,8 @@ export const useStage = (tetro, spawnTetro) => {
 			})
 			// Check for collision
 			if (tetro.collided) {
-				spawnTetro()
+				spawnTetro(gameInfo.allChunks[gameInfo.idx])
+				gameInfo.collision = true
 				return sweepRows(newStage)
 			}
 
