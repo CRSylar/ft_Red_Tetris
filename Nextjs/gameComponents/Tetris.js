@@ -14,7 +14,7 @@ import io from "socket.io-client";
 // Socket.io Instance
 let socket = null
 
-export const gameInfo = {allChunks: [] , idx: 0, collision: false }
+export const gameInfo = {allChunks: [], collision: false }
 
 // Styled Components
 const StyledTetrisWrapper = styled.div`
@@ -81,7 +81,8 @@ function Tetris () {
 
 	useEffect( () => {
 		if (gameInfo.collision){
-			gameInfo.idx++
+			console.log(gameInfo.allChunks)
+			gameInfo.allChunks.shift()
 			gameInfo.collision = false
 			socket?.emit('spectreUpdate', {stage, room: Tlobby})
 		}
@@ -103,7 +104,8 @@ function Tetris () {
 		// Reset everything
 		setStage(createStage())
 		setSpeed(1000)
-		spawnTetro(gameInfo.allChunks[gameInfo.idx++])
+		spawnTetro(gameInfo.allChunks[0])
+		gameInfo.allChunks.shift()
 		setGameOVer(false)
 		setScore(0)
 		setRows(0)

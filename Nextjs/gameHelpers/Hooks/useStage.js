@@ -60,7 +60,7 @@ export const useStage = (tetro, spawnTetro) => {
 			})
 			// Check for collision
 			if (tetro.collided) {
-				spawnTetro(gameInfo.allChunks[gameInfo.idx])
+				spawnTetro(gameInfo.allChunks[0])
 				gameInfo.collision = true
 				return sweepRows(newStage)
 			}

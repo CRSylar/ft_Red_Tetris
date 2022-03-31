@@ -85,7 +85,6 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			else
 				i++
 		}
-		console.log(spectra)
 		/* Con questo emit invio il dato a tutti gli ALTRI (me escluso) partecipanti della room */
 		client.broadcast.to(room).emit('scatteringSpectra', { spectra })
 
