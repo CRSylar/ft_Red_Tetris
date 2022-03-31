@@ -53,24 +53,33 @@ function Tetris () {
 
 	// Connessione al WebSocket
 	useEffect( () => {
+		/* Create socket instance & emit the join request */
 		if (!socket) {
 			socket = io('http://localhost:8080/', {
 				transports: ['websocket']
 			})
 			socket.emit('joinRoom', Tlobby )
+			/* All Listeners */
+				// join to exising room listener
 			socket.on('Welcome', ({msg, payload}) => {
 				console.log(msg)
 				setHost(payload)
 			})
+				// join to newly created room listener (will turn off the welcome listener)
 			socket.on('Created', ({msg, payload}) => {
 				console.log(msg)
 				setHost(payload)
 				socket.off('Welcome')
 			})
+				// Host has started the game listener
 			socket.on('startGame', ({chunks}) => {
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
+				// More chunks coming from server
+			socket.on('servingChunks',
+				({chunks}) => chunks.map( chunk => gameInfo.allChunks.push(chunk)))
+				// Receiving the spectre of other player's stage
 			socket.on('scatteringSpectra', ({spectra}) => {
 				console.log(spectra)
 			})
@@ -81,14 +90,15 @@ function Tetris () {
 
 	useEffect( () => {
 		if (gameInfo.collision){
-			console.log(gameInfo.allChunks)
 			gameInfo.allChunks.shift()
 			gameInfo.collision = false
 			socket?.emit('spectreUpdate', {stage, room: Tlobby})
+			if (gameInfo.allChunks.length === 3)
+				socket?.emit('moreChunkRequest', {room: Tlobby})
 		}
 	}, [gameInfo.collision])
 
-	// Emitters
+	/* Emitters */
 	const emitStartGame = () => {
 		socket?.emit('startGameReq', {room: Tlobby})
 	}

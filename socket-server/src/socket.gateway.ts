@@ -8,6 +8,7 @@ import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
 import { generateChunks } from './Utils';
 import { inspect } from "util";
+import roomPayloadDto from 'dtos/roomPayload.dto';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
 export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -50,16 +51,15 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	}
 
 	@SubscribeMessage('startGameReq')
-	startGame(client: Socket, payload: {room: string}) {
-		console.log("Richiesta di start da : ", client.id, "nella Room: ", payload.room)
+	startGame(client: Socket, {room} : roomPayloadDto) {
+		console.log("Richiesta di start da : ", client.id, "nella Room: ", room)
 		const chunks = generateChunks()
 		console.log('Chunks: ', chunks)
-		this.server.to(payload.room).emit('startGame', {chunks})
+		this.server.to(room).emit('startGame', {chunks})
 	}
 
 	@SubscribeMessage('spectreUpdate')
 	spectraScattering(client: Socket, {stage, room}) {
-
 		/*
 		 * lavoro su tutto lo stage in arrivo per pulire il dato
 		 * il primo map mi dara la Row, il secondo map, quello che assegno
@@ -91,5 +91,12 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		/* Con questo emit invio il dato a tutti (me incluso) i partecipanti della room
 		 *      this.server.to(room).emit('scatteringSpectra', { spectra })
 		 * */
+	}
+
+	@SubscribeMessage('moreChunkRequest')
+	emitMoreChunks(client: Socket, { room }: roomPayloadDto) {
+		const chunks = generateChunks()
+		console.log('serving new Chunks to -> ', room)
+		this.server.to(room).emit('servingChunks', {chunks})
 	}
 }
