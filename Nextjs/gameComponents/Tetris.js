@@ -71,6 +71,9 @@ function Tetris () {
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
+			socket.on('scatteringSpectra', ({spectra}) => {
+				console.log(spectra)
+			})
 		}
 
 		if (socket) return () => socket.disconnect()
@@ -80,6 +83,7 @@ function Tetris () {
 		if (gameInfo.collision){
 			gameInfo.idx++
 			gameInfo.collision = false
+			socket?.emit('spectreUpdate', {stage, room: Tlobby})
 		}
 	}, [gameInfo.collision])
 
