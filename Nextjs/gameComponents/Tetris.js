@@ -14,7 +14,7 @@ import io from "socket.io-client";
 // Socket.io Instance
 let socket = null
 
-export const gameInfo = {allChunks: [], collision: false }
+export const gameInfo = {allChunks: [], collision: false, bonusRow: 0 }
 
 // Styled Components
 const StyledTetrisWrapper = styled.div`
@@ -41,6 +41,7 @@ const StyledTetris = styled.div`
 function Tetris () {
 
 	const [speed, setSpeed] = useState(null);
+	const [inGame, setInGame] = useState(false);
 	const [gameOver, setGameOVer] = useState(false);
 
 	const [tetro, updateTetroPos, spawnTetro, rotateTetro] = useTetro();
@@ -83,6 +84,10 @@ function Tetris () {
 			socket.on('scatteringSpectra', ({spectra}) => {
 				console.log(spectra)
 			})
+				// Receiving maluses when other player sweep more rows
+			socket.on('emittingMalusRows', ({value}) => {
+				console.log(value)
+			})
 		}
 
 		if (socket) return () => socket.disconnect()
@@ -98,11 +103,21 @@ function Tetris () {
 		}
 	}, [gameInfo.collision])
 
+	useEffect( () => {
+		if (gameInfo.bonusRow > 0) {
+			emitMalus()
+			gameInfo.bonusRow = 0
+		}
+	}, [gameInfo.bonusRow])
+
 	/* Emitters */
 	const emitStartGame = () => {
 		socket?.emit('startGameReq', {room: Tlobby})
 	}
 
+	const emitMalus = () => {
+		socket?.emit('malusRowsRequest', {value : gameInfo.bonusRow , room:Tlobby})
+	}
 
 	// Movimento laterale del Tetro
 	const moveTetro = dir => {
@@ -112,6 +127,7 @@ function Tetris () {
 
 	const startGame = useCallback(() => {
 		// Reset everything
+		setInGame(true)
 		setStage(createStage())
 		setSpeed(1000)
 		spawnTetro(gameInfo.allChunks[0])
@@ -205,12 +221,13 @@ function Tetris () {
 						</div>
 					)
 				}
-				{host ? (
-					<StartButton callback={emitStartGame} />
-					)
-				: (
-					<span style={{color:"white"}}>{'The game will start when the Host player is ready'}</span>
-					)}
+				{
+				!inGame && (
+					host ?
+					(<StartButton callback={emitStartGame} />)
+					:
+					(<span style={{color:"white"}}>{'The game will start when the Host player is ready'}</span>))
+				}
 
 			</div>
 			</StyledTetris>

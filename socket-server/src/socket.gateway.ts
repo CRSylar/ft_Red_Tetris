@@ -99,4 +99,9 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		console.log('serving new Chunks to -> ', room)
 		this.server.to(room).emit('servingChunks', {chunks})
 	}
+
+	@SubscribeMessage('malusRowsRequest')
+	emitMalus(client: Socket, {value, room}) {
+		client.broadcast.to(room).emit('emittingMalusRows', {value})
+	}
 }

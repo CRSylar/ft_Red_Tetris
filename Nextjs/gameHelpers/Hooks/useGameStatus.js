@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
+import {gameInfo} from "../../gameComponents/Tetris";
 
 
 export const useGameStatus = (rowsCleared) => {
@@ -18,7 +19,7 @@ export const useGameStatus = (rowsCleared) => {
 				return prevState + Points[(rowsCleared - 2) % 4] * (level + 1)
 				}
 			)
-
+			gameInfo.bonusRow = rowsCleared - 2
 			setRows(prevState => prevState + (rowsCleared - 1))
 		}
 	}, [level, Points, rowsCleared])

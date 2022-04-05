@@ -19,8 +19,11 @@ export const useStage = (tetro, spawnTetro) => {
 			presentStage.reduce( (newStage, row) => {
 
 				// cerchiamo almeno una volta il valore 0 (cella vuota) nella riga
-				// se non presente ( -1 ) allora la riga è completa e va rimossa
-				if (row.findIndex(cell => cell[0] === 0) === -1) {
+				// se non presente ( -1 ) cerco allora se la riga non contiene
+				// pezzi bloccati da malus ( non removibili), se anche questo findindex
+				// torna -1 allora la riga è completa e va rimossa
+				if ((row.findIndex(cell => cell[0] === 0) === -1) &&
+					(row.findIndex(cell => cell[1] === 'blocked') === -1)) {
 					setRowsCleared(prevState => prevState + 1)
 
 					// Unshift aggiunge nellArray X nuove righe all'INIZIO, dando l'effetto che il resto
