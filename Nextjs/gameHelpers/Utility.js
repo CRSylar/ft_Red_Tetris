@@ -1,3 +1,4 @@
+import {cloneElement} from "react";
 
 export const STAGE_WIDTH = 12
 export const STAGE_HEIGHT = 20
@@ -28,4 +29,14 @@ export const checkCollision = (tetro, stage, {x: moveX, y: moveY}) => {
 		}
 	}
 
+}
+
+export const drawSpectra = (spectra, id) => {
+
+	const newStage = createStage()
+	spectra.map( el => {
+		el.columns.map(c => newStage[el.row][c] = [1, 'merged'])
+	})
+
+	return [newStage, id]
 }

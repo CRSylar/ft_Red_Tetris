@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Stage from "./Stage";
 import Display from "./Display";
 import StartButton from "./StartButton";
-import {checkCollision, createStage} from "../gameHelpers/Utility";
+import {checkCollision, createStage, drawSpectra} from "../gameHelpers/Utility";
 import styled from "styled-components";
 import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
@@ -10,6 +10,7 @@ import {useInterval} from "../gameHelpers/Hooks/useInterval";
 import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 import {useRouter} from "next/router";
 import io from "socket.io-client";
+import Spectrum from "./Spectrum";
 
 // Socket.io Instance
 let socket = null
@@ -43,6 +44,9 @@ function Tetris () {
 	const [speed, setSpeed] = useState(null);
 	const [inGame, setInGame] = useState(false);
 	const [gameOver, setGameOVer] = useState(false);
+	/* participants means the socket id of each player */
+	const [participants, setParticipants] = useState([])
+	const [spectreStage, setSpectreStage] = useState([null, null])
 
 	const [tetro, updateTetroPos, spawnTetro, rotateTetro] = useTetro();
 	const [stage, setStage, rowsCleared] = useStage(tetro, spawnTetro);
@@ -73,7 +77,9 @@ function Tetris () {
 				socket.off('Welcome')
 			})
 				// Host has started the game listener
-			socket.on('startGame', ({chunks}) => {
+			socket.on('startGame', ({chunks, participants}) => {
+				//setParticipants(participants.filter(player => player !== socket.id))
+				setParticipants(['1', '2', '3'])
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
@@ -81,8 +87,8 @@ function Tetris () {
 			socket.on('servingChunks',
 				({chunks}) => chunks.map( chunk => gameInfo.allChunks.push(chunk)))
 				// Receiving the spectre of other player's stage
-			socket.on('scatteringSpectra', ({spectra}) => {
-				console.log(spectra)
+			socket.on('scatteringSpectra', ({spectra, id}) => {
+				setSpectreStage(drawSpectra(spectra, id))
 			})
 				// Receiving maluses when other player sweep more rows
 			socket.on('emittingMalusRows', ({value}) => {
@@ -205,32 +211,38 @@ function Tetris () {
 	return (
 		<StyledTetrisWrapper role={"button"} tabIndex={"0"}
 		                     onKeyDown={e => move(e)} onKeyUp={keyUp} >
+			{/* Actual player  */}
 			<StyledTetris>
+				<Stage stage={stage}/>
 
-			<Stage stage={stage}/>
+				<div className={"Aside"}>
+					{gameOver ?
+						(<Display gameOver={gameOver} text={'Game Over'} />)
+						:
+						(
+							<div>
+								<Display text={`Score: ${score}`}/>
+								<Display text={`Rows: ${rows}`}/>
+								<Display text={`Level: ${level}`}/>
+							</div>
+						)
+					}
+					{
+						!inGame && (
+							host ?
+								(<StartButton callback={emitStartGame} />)
+								:
+								(<span style={{color:"white"}}>{'The game will start when the Host player is ready'}</span>))
+					}
 
-			<div className={"Aside"}>
-				{gameOver ?
-					(<Display gameOver={gameOver} text={'Game Over'} />)
-				:
-					(
-						<div>
-							<Display text={`Score: ${score}`}/>
-							<Display text={`Rows: ${rows}`}/>
-							<Display text={`Level: ${level}`}/>
-						</div>
-					)
-				}
-				{
-				!inGame && (
-					host ?
-					(<StartButton callback={emitStartGame} />)
-					:
-					(<span style={{color:"white"}}>{'The game will start when the Host player is ready'}</span>))
-				}
-
-			</div>
+				</div>
 			</StyledTetris>
+
+			{/* Other Players */}
+			{
+				participants.map( (el) => <Spectrum key={el} id={el} spectreStage={spectreStage} />)
+			}
+
 		</StyledTetrisWrapper>
 	);
 }

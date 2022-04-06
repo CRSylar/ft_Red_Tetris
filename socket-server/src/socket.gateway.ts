@@ -7,7 +7,6 @@ import {
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
 import { generateChunks } from './Utils';
-import { inspect } from "util";
 import roomPayloadDto from 'dtos/roomPayload.dto';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
@@ -52,10 +51,13 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	@SubscribeMessage('startGameReq')
 	startGame(client: Socket, {room} : roomPayloadDto) {
-		console.log("Richiesta di start da : ", client.id, "nella Room: ", room)
+		const participants = []
+		this.server.sockets.adapter.rooms.get(room).forEach(player => participants.push(player))
+		this.logger.log("Richiesta di start da : ", client.id, "nella Room: ", room)
 		const chunks = generateChunks()
-		console.log('Chunks: ', chunks)
-		this.server.to(room).emit('startGame', {chunks})
+		this.logger.log('Chunks: ', chunks)
+
+		this.server.to(room).emit('startGame', {chunks, participants})
 	}
 
 	@SubscribeMessage('spectreUpdate')
@@ -86,10 +88,10 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				i++
 		}
 		/* Con questo emit invio il dato a tutti gli ALTRI (me escluso) partecipanti della room */
-		client.broadcast.to(room).emit('scatteringSpectra', { spectra })
+		client.broadcast.to(room).emit('scatteringSpectra', { spectra, id: client.id })
 
 		/* Con questo emit invio il dato a tutti (me incluso) i partecipanti della room
-		 *      this.server.to(room).emit('scatteringSpectra', { spectra })
+		 *      this.server.to(room).emit('scatteringSpectra', { spectra, id: client.id})
 		 * */
 	}
 
