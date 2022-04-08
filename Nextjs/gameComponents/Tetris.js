@@ -78,8 +78,8 @@ function Tetris () {
 			})
 				// Host has started the game listener
 			socket.on('startGame', ({chunks, participants}) => {
-				//setParticipants(participants.filter(player => player !== socket.id))
-				setParticipants(['1', '2', '3'])
+				setParticipants(participants.filter(player => player !== socket.id))
+				//setParticipants(['1', '2', '3'])
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
@@ -239,9 +239,11 @@ function Tetris () {
 			</StyledTetris>
 
 			{/* Other Players */}
+			<div style={{display:'flex', marginLeft:'1.5rem', overflowX:'scroll' }}>
 			{
 				participants.map( (el) => <Spectrum key={el} id={el} spectreStage={spectreStage} />)
 			}
+			</div>
 
 		</StyledTetrisWrapper>
 	);

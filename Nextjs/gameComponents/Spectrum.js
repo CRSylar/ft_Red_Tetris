@@ -11,7 +11,9 @@ function Spectrum ({id, spectreStage}) {
 		stage = spectreStage[0]
 
 	return (
+		<div style={{width: '120px', margin:'0.5rem'}}>
 			<SpectreStage stage={stage} />
+		</div>
 	);
 }
 

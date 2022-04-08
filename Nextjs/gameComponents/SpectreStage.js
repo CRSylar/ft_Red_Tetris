@@ -8,12 +8,12 @@ const StyledStage = styled.div`
 	display: grid;
 	grid-template-rows: repeat(
 		${STAGE_HEIGHT},
-		calc(25vw / ${STAGE_WIDTH})
+		10px
 	);
-	grid-template-columns: repeat(${STAGE_WIDTH}, 1fr);
-	width: 100%;
+	grid-template-columns: repeat(${STAGE_WIDTH}, 10px);
+	//width: 100%;
 	margin: 0.5rem;
-	max-width: 25vw;
+	max-width: 10px;
 	background: #000;
 `
 
