@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
-import { generateChunks } from './Utils';
+import { generateChunks, roomPlayerMap } from './Utils';
 import roomPayloadDto from 'dtos/roomPayload.dto';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
@@ -20,30 +20,44 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	}
 
 	handleConnection(client : Socket, ...args : any[]) : any {
+		// Devo usare questo ignore perche mi da playerName come string[], su cui non posso
+		// fare split, anche se ovviamente la variabile la setto io quindi sono sicuro sia string !== string[]
+		// @ts-ignore
+		const pName = client.handshake.query.playerName.split(']')[0]
+		roomPlayerMap.set(client.id, pName)
 		this.logger.log('Client Connected: ', client.id)
 	}
 
 	handleDisconnect(client : Socket) : any {
 		this.logger.log('Client Disconnected: ', client.id)
+		client.broadcast.emit('clientLeaving', client.id)
+		roomPlayerMap.delete(client.id)
 	}
 
 	@SubscribeMessage('joinRoom')
-	createRoomRequest(client: Socket, payload: string) {
+	createRoomRequest(client: Socket, payload: string[]) {
+		const playerName = payload[1].split(']')[0]
 		// Check if the room exist in this object
 		const rooms = this.server.sockets.adapter.rooms
-		if ( rooms.get(payload)?.size ) {
+		if ( rooms.get(payload[0])?.size ) {
 			this.logger.log('Joined')
 			client.join(payload)
-			this.server.to(payload).emit('Welcome', {
-				msg: `Sei Entrato nella Lobby: ${ payload }`,
+			this.server.to(client.id).emit('Welcome', {
+				msg: `Sei Entrato nella Lobby: ${ payload[0] }`,
 				payload: false,
+				count: rooms.get(payload[0])?.size,
 			})
+			client.broadcast.to(payload).emit('Joined',  {
+				msg: `${playerName} È entrato nella Lobby`,
+				payload: rooms.get(payload[0])?.size,
+			})
+
 		}
 		else {
 			this.logger.log('Created')
-			client.join(payload)
-			this.server.to(payload).emit('Created', {
-				msg: `Sei il Propietario della Lobby: ${ payload }`,
+			client.join(payload[0])
+			this.server.to(payload[0]).emit('Created', {
+				msg: `Sei il Propietario della Lobby: ${ payload[0] }`,
 				payload: true,
 			})
 		}
@@ -52,7 +66,11 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	@SubscribeMessage('startGameReq')
 	startGame(client: Socket, {room} : roomPayloadDto) {
 		const participants = []
-		this.server.sockets.adapter.rooms.get(room).forEach(player => participants.push(player))
+		this.server.sockets.adapter.rooms.get(room).forEach(player => {
+			const name = roomPlayerMap.get(player)
+			participants.push([player, name])
+			console.log(participants)
+		})
 		this.logger.log("Richiesta di start da : ", client.id, "nella Room: ", room)
 		const chunks = generateChunks()
 		this.logger.log('Chunks: ', chunks)
@@ -88,7 +106,7 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				i++
 		}
 		/* Con questo emit invio il dato a tutti gli ALTRI (me escluso) partecipanti della room */
-		client.broadcast.to(room).emit('scatteringSpectra', { spectra, id: client.id })
+		client.broadcast.to(room).emit('scatteringSpectra', { spectra, id: client.id})
 
 		/* Con questo emit invio il dato a tutti (me incluso) i partecipanti della room
 		 *      this.server.to(room).emit('scatteringSpectra', { spectra, id: client.id})

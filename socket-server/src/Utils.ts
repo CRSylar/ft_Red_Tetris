@@ -1,4 +1,6 @@
 
+export const roomPlayerMap = new Map()
+
 export function generateChunks() : string[] {
 	const tetrominos : string = 'IJLOSTZ'
 	const randTetromino: string[] = new Array

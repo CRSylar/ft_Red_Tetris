@@ -11,6 +11,7 @@ import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 import {useRouter} from "next/router";
 import io from "socket.io-client";
 import Spectrum from "./Spectrum";
+import Box from "@mui/material/Box";
 
 // Socket.io Instance
 let socket = null
@@ -41,9 +42,11 @@ const StyledTetris = styled.div`
 // Main Function of Game
 function Tetris () {
 
+	const [host, setHost] = useState(false)
 	const [speed, setSpeed] = useState(null);
 	const [inGame, setInGame] = useState(false);
 	const [gameOver, setGameOVer] = useState(false);
+	const [count, setCount] = useState(1)
 	/* participants means the socket id of each player */
 	const [participants, setParticipants] = useState([])
 	const [spectreStage, setSpectreStage] = useState([null, null])
@@ -52,34 +55,47 @@ function Tetris () {
 	const [stage, setStage, rowsCleared] = useStage(tetro, spawnTetro);
 	const [score, setScore, level, setLevel, rows, setRows] = useGameStatus(rowsCleared);
 
-	const {query} = useRouter()
-	const Tlobby = Object.keys(query)[0]?.split('[')[0]
-	const [host, setHost] = useState(false)
+	const {asPath} = useRouter()
+	const Tlobby = asPath.split('#')[1].split('[')
 
 	// Connessione al WebSocket
 	useEffect( () => {
 		/* Create socket instance & emit the join request */
 		if (!socket) {
 			socket = io('http://localhost:8080/', {
-				transports: ['websocket']
+				transports: ['websocket'],
+				query: {
+					playerName: Tlobby[1]
+				}
 			})
 			socket.emit('joinRoom', Tlobby )
 			/* All Listeners */
 				// join to exising room listener
-			socket.on('Welcome', ({msg, payload}) => {
+			socket.on('Welcome', ({msg, payload, count}) => {
 				console.log(msg)
 				setHost(payload)
+				setCount(count)
 			})
 				// join to newly created room listener (will turn off the welcome listener)
 			socket.on('Created', ({msg, payload}) => {
 				console.log(msg)
 				setHost(payload)
-				socket.off('Welcome')
+			})
+				// New Player joined this room
+			socket.on('Joined', ({msg, payload}) => {
+				console.log(msg)
+				setCount(payload)
+			})
+				// Someone leaving, need to check if inGame with us
+			socket.on('clientLeaving', (clientId) => {
+				const updateParticipants = participants.filter( (player) => player[0] !== clientId)
+				setParticipants(updateParticipants)
 			})
 				// Host has started the game listener
 			socket.on('startGame', ({chunks, participants}) => {
-				setParticipants(participants.filter(player => player !== socket.id))
+				setParticipants(participants.filter(player => player[0] !== socket.id))
 				//setParticipants(['1', '2', '3'])
+				console.log(participants)
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
@@ -97,15 +113,15 @@ function Tetris () {
 		}
 
 		if (socket) return () => socket.disconnect()
-	}, [Tlobby, query, startGame])
+	}, [])
 
 	useEffect( () => {
 		if (gameInfo.collision){
 			gameInfo.allChunks.shift()
 			gameInfo.collision = false
-			socket?.emit('spectreUpdate', {stage, room: Tlobby})
+			socket?.emit('spectreUpdate', {stage, room: Tlobby[0]})
 			if (gameInfo.allChunks.length === 3)
-				socket?.emit('moreChunkRequest', {room: Tlobby})
+				socket?.emit('moreChunkRequest', {room: Tlobby[0]})
 		}
 	}, [gameInfo.collision])
 
@@ -118,11 +134,11 @@ function Tetris () {
 
 	/* Emitters */
 	const emitStartGame = () => {
-		socket?.emit('startGameReq', {room: Tlobby})
+		socket?.emit('startGameReq', {room: Tlobby[0]})
 	}
 
 	const emitMalus = () => {
-		socket?.emit('malusRowsRequest', {value : gameInfo.bonusRow , room:Tlobby})
+		socket?.emit('malusRowsRequest', {value : gameInfo.bonusRow , room:Tlobby[0]})
 	}
 
 	// Movimento laterale del Tetro
@@ -160,6 +176,7 @@ function Tetris () {
 			if (tetro.pos.y < 1) {
 				console.log("GAME OVER!")
 				setGameOVer(true)
+				setInGame(false)
 				setSpeed(null)
 			}
 		}
@@ -211,6 +228,7 @@ function Tetris () {
 	return (
 		<StyledTetrisWrapper role={"button"} tabIndex={"0"}
 		                     onKeyDown={e => move(e)} onKeyUp={keyUp} >
+
 			{/* Actual player  */}
 			<StyledTetris>
 				<Stage stage={stage}/>
@@ -236,12 +254,18 @@ function Tetris () {
 					}
 
 				</div>
+
+				<div style={{color:"white"}}>
+					{`Player(s): ${count}`}
+				</div>
 			</StyledTetris>
 
 			{/* Other Players */}
 			<div style={{display:'flex', marginLeft:'1.5rem', overflowX:'scroll' }}>
 			{
-				participants.map( (el) => <Spectrum key={el} id={el} spectreStage={spectreStage} />)
+				participants.map( (el) =>
+					<Spectrum key={el[0]} id={el[0]} name={el[1]} spectreStage={spectreStage} />
+				)
 			}
 			</div>
 

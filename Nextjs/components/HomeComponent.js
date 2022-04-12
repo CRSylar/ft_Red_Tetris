@@ -34,7 +34,7 @@ function HomeComponent () {
 			reset()
 			router.push({
 				pathname: '/match',
-				query :  `${roomName}[${user.username}]` })
+				hash :  `${roomName}[${user.username}]` })
 	}
 
 	useEffect( () => {

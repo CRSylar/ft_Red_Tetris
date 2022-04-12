@@ -3,7 +3,7 @@ import SpectreStage from "./SpectreStage";
 import {createStage} from "../gameHelpers/Utility";
 
 
-function Spectrum ({id, spectreStage}) {
+function Spectrum ({id, name, spectreStage}) {
 
 	 let stage = createStage()
 
@@ -12,6 +12,10 @@ function Spectrum ({id, spectreStage}) {
 
 	return (
 		<div style={{width: '120px', margin:'0.5rem'}}>
+			<div style={{color:"white", display:'flex', justifyContent:'center'}}>
+				{name}
+
+			</div>
 			<SpectreStage stage={stage} />
 		</div>
 	);
