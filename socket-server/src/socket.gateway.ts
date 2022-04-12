@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
-import { generateChunks, allPlayerMap } from './Utils';
+import { generateChunks, allPlayerMap, allRoomStatus } from './Utils';
 import roomPayloadDto from 'dtos/roomPayload.dto';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
@@ -77,6 +77,7 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				msg: `Sei il Propietario della Lobby: ${ payload[0] }`,
 				payload: true,
 			})
+			allRoomStatus.set(payload[0], {inGame: false, quantity: 0})
 			allPlayerMap.set(client.id, {
 				...allPlayerMap.get(client.id),
 				host: true,
@@ -86,17 +87,19 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	@SubscribeMessage('startGameReq')
 	startGame(client: Socket, {room} : roomPayloadDto) {
-		if (allPlayerMap.get(client.id).host) {
+		if (allPlayerMap.get(client.id).host && !allRoomStatus.get(room).inGame) {
 			const participants = []
 			this.server.sockets.adapter.rooms.get(room).forEach(player => {
-				const name = allPlayerMap.get(player).userName
-				participants.push([player, name])
-				console.log(participants)
+				const user = allPlayerMap.get(player)
+				// resetto lo stato di loser a False a inizio game cosi da sovrascrivere eventuali game precedenti in cui era
+				// stato settato a true
+				allPlayerMap.set(player, {userName: user.userName, loser: false, host: user.host})
+				participants.push([player, user.userName])
 			})
 			this.logger.log("Richiesta di start da : ", client.id, "nella Room: ", room)
 			const chunks = generateChunks()
 			this.logger.log('Chunks: ', chunks)
-
+			allRoomStatus.set(room, {inGame: true, quantity: participants.length})
 			this.server.to(room).emit('startGame', {chunks, participants})
 		}
 	}
@@ -148,4 +151,55 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		client.broadcast.to(room).emit('emittingMalusRows', {value})
 	}
 
+	@SubscribeMessage('gameOver')
+	updateLoserPlayer(client: Socket, {room} : roomPayloadDto) {
+		// Aggiorno lo stato del player su Loser se non era gia loser
+		if (!allPlayerMap.get(client.id).loser){
+			allPlayerMap.set(client.id, {
+				...allPlayerMap.get(client.id),
+				loser: true
+			})
+			// Aggiorno il conteggio dei giocatori ancora "in Gioco" cosi da tenere traccia del LastMenStanding
+			const activePlayer = allRoomStatus.get(room).quantity - 1
+			allRoomStatus.set(room, {
+				...allRoomStatus.get(room),
+				quantity: activePlayer
+			})
+			// Se c'é 1 solo utente rimasto la partita é finita, il vincitore deve diventare Host e il vecchio
+			// host deve perdere questo status
+			if (activePlayer === 1) {
+				const players = this.server.sockets.adapter.rooms.get(room)
+				players.forEach( player => {
+				// trovo il vecchio host e lo degrado - lato server
+					if (allPlayerMap.get(player).host){
+						allPlayerMap.set(player, {
+							...allPlayerMap.get(player),
+							host: false
+						})
+						// poi invio al client l'evento
+						this.server.to(player).emit('downgradedLoser', {host: false})
+					}
+					// se il player non è perdente ( vincente) allora riceve l'evento e diventa host del prossimo match
+					if (!allPlayerMap.get(player).loser) {
+						this.server.to(room).emit('newWinner', allPlayerMap.get(player).userName)
+						this.server.to(player).emit('YouWin' , {
+							msg: 'Congrats! now you will promoted to Host !!',
+							host: true
+						})
+						// aggiornamento host lato server
+						allPlayerMap.set(player, {
+							...allPlayerMap.get(player),
+							host: true
+						})
+					}
+				})
+				// infine dichiaro il game come concluso - lato server ( altrimenti non é rilanciabile )
+				allRoomStatus.set(room, {
+					...allRoomStatus.get(room),
+					inGame: false
+				})
+
+			}
+		}
+	}
 }

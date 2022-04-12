@@ -102,6 +102,21 @@ function Tetris () {
 			socket.on('hostUpgrade', ({host}) => {
 				setHost(host)
 			})
+				// You lost the match, lose even the host status
+			socket.on('downgradedLoser', ({host}) => {
+				setHost(host)
+			})
+			// You win the match, so now you are the new Host
+			socket.on('YouWin', ({msg, host}) => {
+				setSpeed(null)
+				setInGame(false)
+				console.log(msg)
+				setHost(host)
+			})
+			// There's a winner, cheers
+			socket.on('newWinner', (winnerName) => {
+				console.log('Congrats to ', winnerName)
+			})
 				// More chunks coming from server
 			socket.on('servingChunks',
 				({chunks}) => chunks.map( chunk => gameInfo.allChunks.push(chunk)))
@@ -185,6 +200,7 @@ function Tetris () {
 			// Check se la collisione porta a un game over in caso siamo arrivati in cima alla griglia
 			if (tetro.pos.y < 1) {
 				console.log("GAME OVER!")
+				socket?.emit('gameOver', {room: Tlobby[0]})
 				setGameOVer(true)
 				setInGame(false)
 				setSpeed(null)
