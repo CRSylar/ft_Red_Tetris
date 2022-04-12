@@ -95,9 +95,12 @@ function Tetris () {
 			socket.on('startGame', ({chunks, participants}) => {
 				setParticipants(participants.filter(player => player[0] !== socket.id))
 				//setParticipants(['1', '2', '3'])
-				console.log(participants)
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
+			})
+				// Server Choose you as the newHost
+			socket.on('hostUpgrade', ({host}) => {
+				setHost(host)
 			})
 				// More chunks coming from server
 			socket.on('servingChunks',
@@ -112,7 +115,11 @@ function Tetris () {
 			})
 		}
 
-		if (socket) return () => socket.disconnect()
+		if (socket) return () => {
+			socket.emit('hostLeaving', {room: Tlobby[0]})
+			socket.disconnect()
+			socket = null
+		}
 	}, [])
 
 	useEffect( () => {
@@ -134,6 +141,9 @@ function Tetris () {
 
 	/* Emitters */
 	const emitStartGame = () => {
+		// svuoto array dei partecipanti per Aggiornarlo con i nuovi che arriveranno dal server
+		setParticipants([])
+		setSpectreStage([null, null])
 		socket?.emit('startGameReq', {room: Tlobby[0]})
 	}
 

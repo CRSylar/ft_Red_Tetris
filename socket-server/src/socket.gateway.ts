@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import {Socket, Server } from "socket.io";
 import { Logger } from "@nestjs/common";
-import { generateChunks, roomPlayerMap } from './Utils';
+import { generateChunks, allPlayerMap } from './Utils';
 import roomPayloadDto from 'dtos/roomPayload.dto';
 
 @WebSocketGateway(3001,{ transport: ['websocket'], path: '/socket.io' })
@@ -23,15 +23,33 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		// Devo usare questo ignore perche mi da playerName come string[], su cui non posso
 		// fare split, anche se ovviamente la variabile la setto io quindi sono sicuro sia string !== string[]
 		// @ts-ignore
-		const pName = client.handshake.query.playerName.split(']')[0]
-		roomPlayerMap.set(client.id, pName)
+		const userName = client.handshake.query.playerName.split(']')[0]
+		allPlayerMap.set(client.id, { userName, host: false, loser: false })
 		this.logger.log('Client Connected: ', client.id)
 	}
 
 	handleDisconnect(client : Socket) : any {
 		this.logger.log('Client Disconnected: ', client.id)
 		client.broadcast.emit('clientLeaving', client.id)
-		roomPlayerMap.delete(client.id)
+		allPlayerMap.delete(client.id)
+	}
+
+	@SubscribeMessage('hostLeaving')
+	assignNewHost(client: Socket, {room} : roomPayloadDto) {
+		if (allPlayerMap.get(client.id).host) {
+			const players = this.server.sockets.adapter.rooms.get(room)
+			let newHost = false
+			players.forEach( playerId => {
+				if (playerId !== client.id && !allPlayerMap.get(playerId).loser && !newHost) {
+					newHost = true
+					allPlayerMap.set(playerId, {
+						...allPlayerMap.get(playerId),
+						host:true
+					})
+				}
+				this.server.to(playerId).emit('hostUpgrade', {host: true})
+			})
+		}
 	}
 
 	@SubscribeMessage('joinRoom')
@@ -51,7 +69,6 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				msg: `${playerName} È entrato nella Lobby`,
 				payload: rooms.get(payload[0])?.size,
 			})
-
 		}
 		else {
 			this.logger.log('Created')
@@ -60,22 +77,28 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				msg: `Sei il Propietario della Lobby: ${ payload[0] }`,
 				payload: true,
 			})
+			allPlayerMap.set(client.id, {
+				...allPlayerMap.get(client.id),
+				host: true,
+			})
 		}
 	}
 
 	@SubscribeMessage('startGameReq')
 	startGame(client: Socket, {room} : roomPayloadDto) {
-		const participants = []
-		this.server.sockets.adapter.rooms.get(room).forEach(player => {
-			const name = roomPlayerMap.get(player)
-			participants.push([player, name])
-			console.log(participants)
-		})
-		this.logger.log("Richiesta di start da : ", client.id, "nella Room: ", room)
-		const chunks = generateChunks()
-		this.logger.log('Chunks: ', chunks)
+		if (allPlayerMap.get(client.id).host) {
+			const participants = []
+			this.server.sockets.adapter.rooms.get(room).forEach(player => {
+				const name = allPlayerMap.get(player).userName
+				participants.push([player, name])
+				console.log(participants)
+			})
+			this.logger.log("Richiesta di start da : ", client.id, "nella Room: ", room)
+			const chunks = generateChunks()
+			this.logger.log('Chunks: ', chunks)
 
-		this.server.to(room).emit('startGame', {chunks, participants})
+			this.server.to(room).emit('startGame', {chunks, participants})
+		}
 	}
 
 	@SubscribeMessage('spectreUpdate')
@@ -124,4 +147,5 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	emitMalus(client: Socket, {value, room}) {
 		client.broadcast.to(room).emit('emittingMalusRows', {value})
 	}
+
 }

@@ -1,5 +1,5 @@
 
-export const roomPlayerMap = new Map()
+export const allPlayerMap = new Map()
 
 export function generateChunks() : string[] {
 	const tetrominos : string = 'IJLOSTZ'
