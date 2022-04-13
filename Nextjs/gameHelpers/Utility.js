@@ -31,6 +31,15 @@ export const checkCollision = (tetro, stage, {x: moveX, y: moveY}) => {
 
 }
 
+export const insertMalusRows = (stage, setStage,  rows) => {
+	const newStage = stage
+	for (let i = 0; i < rows; i++){
+		newStage.shift()
+		newStage.push(new Array(STAGE_WIDTH).fill(['b', 'blocked']))
+	}
+	console.log(newStage)
+}
+
 export const drawSpectra = (spectra, id) => {
 
 	const newStage = createStage()

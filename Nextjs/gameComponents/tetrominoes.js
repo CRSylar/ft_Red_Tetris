@@ -50,6 +50,8 @@ export const TETROMINOES = {
 			[0, 0 , 0],
 		],
 		color : '227, 78, 78' },
+	b : {
+		color : '220, 220, 220' },
 }
 
 

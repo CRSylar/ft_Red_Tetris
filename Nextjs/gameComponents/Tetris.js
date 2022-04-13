@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import Stage from "./Stage";
 import Display from "./Display";
 import StartButton from "./StartButton";
-import {checkCollision, createStage, drawSpectra} from "../gameHelpers/Utility";
+import {checkCollision, createStage, drawSpectra, insertMalusRows} from "../gameHelpers/Utility";
 import styled from "styled-components";
 import {useTetro} from "../gameHelpers/Hooks/useTetro";
 import {useStage} from "../gameHelpers/Hooks/useStage";
@@ -41,6 +41,8 @@ const StyledTetris = styled.div`
 `
 // Main Function of Game
 function Tetris () {
+
+	const [malus, setMalus] = useState(0)
 
 	const [host, setHost] = useState(false)
 	const [speed, setSpeed] = useState(null);
@@ -119,15 +121,16 @@ function Tetris () {
 				console.log('Congrats to ', winnerName)
 			})
 				// More chunks coming from server
-			socket.on('servingChunks',
-				({chunks}) => chunks.map( chunk => gameInfo.allChunks.push(chunk)))
+			socket.on('servingChunks', ({chunks}) =>
+				chunks.map( chunk => gameInfo.allChunks.push(chunk)))
 				// Receiving the spectre of other player's stage
 			socket.on('scatteringSpectra', ({spectra, id}) => {
 				setSpectreStage(drawSpectra(spectra, id))
 			})
-				// Receiving maluses when other player sweep more rows
+				// Receiving maluses when other player sweep more rows ( receiving sweeped rows - 1 )
 			socket.on('emittingMalusRows', ({value}) => {
 				console.log('Malus: ',value)
+				setMalus(value)
 			})
 		}
 
@@ -140,6 +143,13 @@ function Tetris () {
 		}
 	}, [])
 
+	useEffect(() =>{
+		if (malus > 0){
+			insertMalusRows(stage, setStage, malus)
+			setMalus(0)
+		}
+	}, [malus])
+
 	useEffect( () => {
 		if (gameInfo.collision){
 			gameInfo.allChunks.shift()
@@ -151,6 +161,7 @@ function Tetris () {
 	}, [gameInfo.collision])
 
 	useEffect( () => {
+		console.log('BonusRow: ',gameInfo.bonusRow)
 		if (gameInfo.bonusRow > 0) {
 			emitMalus()
 			gameInfo.bonusRow = 0
