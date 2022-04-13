@@ -11,18 +11,14 @@ export const useGameStatus = (rowsCleared) => {
 	const Points = [40, 100, 300, 1200]
 
 	const calcScore = useCallback(() => {
-
+		console.log('Row Cleared: ',rowsCleared)
 		if (rowsCleared > 0) {
 
-			setScore(prevState => {
-				console.log(rowsCleared)
-				return prevState + Points[(rowsCleared - 2) % 4] * (level + 1)
-				}
-			)
-			gameInfo.bonusRow = rowsCleared - 2
-			setRows(prevState => prevState + (rowsCleared - 1))
+			setScore(prevState => prevState + Points[rowsCleared % 4] * (level + 1))
+			gameInfo.bonusRow = rowsCleared - 1
+			setRows(prevState => prevState + rowsCleared)
 		}
-	}, [level, Points, rowsCleared])
+	}, [level, rowsCleared])
 
 	useEffect( () => {
 		calcScore()

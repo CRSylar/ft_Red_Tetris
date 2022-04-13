@@ -6,7 +6,7 @@ export const useStage = (tetro, spawnTetro) => {
 
 	const [stage, setStage] = useState(createStage())
 	const [rowsCleared, setRowsCleared] = useState(0)
-
+	let i = 0
 
 	useEffect( () => {
 		setRowsCleared(0)
@@ -24,8 +24,8 @@ export const useStage = (tetro, spawnTetro) => {
 				// torna -1 allora la riga è completa e va rimossa
 				if ((row.findIndex(cell => cell[0] === 0) === -1) &&
 					(row.findIndex(cell => cell[1] === 'blocked') === -1)) {
-					setRowsCleared(prevState => prevState + 1)
-
+					//setRowsCleared(prevState => prevState + 1)
+					console.log('Una Riga', ++i)
 					// Unshift aggiunge nellArray X nuove righe all'INIZIO, dando l'effetto che il resto
 					// scenda di X mantenendo lo Stage di dimensione costante
 					newStage.unshift(new Array(presentStage[0].length).fill([0, 'clear']))
@@ -33,6 +33,7 @@ export const useStage = (tetro, spawnTetro) => {
 				}
 				// altrimenti inseriamo la riga cosi com'é nello stage che stiamo ridisegnando e passiamo
 				// alla riga successiva
+				setRowsCleared(i)
 				newStage.push(row)
 				return newStage
 			}, [] )
