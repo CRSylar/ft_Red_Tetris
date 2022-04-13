@@ -93,8 +93,9 @@ function Tetris () {
 			})
 				// Host has started the game listener
 			socket.on('startGame', ({chunks, participants}) => {
+				gameInfo.allChunks = []
+				gameInfo.bonusRow = 0
 				setParticipants(participants.filter(player => player[0] !== socket.id))
-				//setParticipants(['1', '2', '3'])
 				chunks.map( (chunk) => gameInfo.allChunks.push(chunk))
 				startGame()
 			})
@@ -134,6 +135,8 @@ function Tetris () {
 			socket.emit('hostLeaving', {room: Tlobby[0]})
 			socket.disconnect()
 			socket = null
+			gameInfo.allChunks = []
+			gameInfo.bonusRow = 0
 		}
 	}, [])
 

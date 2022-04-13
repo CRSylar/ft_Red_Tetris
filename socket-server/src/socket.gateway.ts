@@ -149,7 +149,7 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	@SubscribeMessage('malusRowsRequest')
 	emitMalus(client: Socket, {value, room}) {
 		//client.broadcast.to(room).emit('emittingMalusRows', {value})
-
+		console.log("Malus : ", value, ' Room -> ', room)
 		this.server.to(room).emit('emittingMalusRows', {value})
 	}
 
