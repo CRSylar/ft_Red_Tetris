@@ -126,7 +126,7 @@ function Tetris () {
 			})
 				// Receiving maluses when other player sweep more rows
 			socket.on('emittingMalusRows', ({value}) => {
-				console.log(value)
+				console.log('Malus: ',value)
 			})
 		}
 

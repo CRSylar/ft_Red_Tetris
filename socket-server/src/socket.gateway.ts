@@ -148,11 +148,22 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	@SubscribeMessage('malusRowsRequest')
 	emitMalus(client: Socket, {value, room}) {
-		client.broadcast.to(room).emit('emittingMalusRows', {value})
+		//client.broadcast.to(room).emit('emittingMalusRows', {value})
+
+		this.server.to(room).emit('emittingMalusRows', {value})
 	}
 
 	@SubscribeMessage('gameOver')
 	updateLoserPlayer(client: Socket, {room} : roomPayloadDto) {
+		const players = this.server.sockets.adapter.rooms.get(room)
+		// Se la partita era in Single Player devo solo settare la partita come finita per poter essere rilanciata
+		if (players.size === 1) {
+			allRoomStatus.set(room, {
+				...allRoomStatus.get(room),
+				inGame: false
+			})
+			return
+		}
 		// Aggiorno lo stato del player su Loser se non era gia loser
 		if (!allPlayerMap.get(client.id).loser){
 			allPlayerMap.set(client.id, {
@@ -168,7 +179,6 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			// Se c'é 1 solo utente rimasto la partita é finita, il vincitore deve diventare Host e il vecchio
 			// host deve perdere questo status
 			if (activePlayer === 1) {
-				const players = this.server.sockets.adapter.rooms.get(room)
 				players.forEach( player => {
 				// trovo il vecchio host e lo degrado - lato server
 					if (allPlayerMap.get(player).host){
@@ -198,8 +208,8 @@ export class socketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 					...allRoomStatus.get(room),
 					inGame: false
 				})
-
 			}
 		}
 	}
 }
+
