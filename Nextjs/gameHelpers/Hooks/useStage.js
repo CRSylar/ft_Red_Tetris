@@ -10,41 +10,39 @@ export const useStage = (tetro, spawnTetro) => {
 
 	useEffect( () => {
 		setRowsCleared(0)
-		let i = 0
+
 		// Present Stage è quello attuale
 		// NewStage in questa funzione è lo stage dopo il controllo di eliminazione riga
 		// potrebbe essere lo stesso del present se non viene eliminata nessuna riga
 		// Oppure se abbiamo eliminato 1a o + righe newStage contiene il nuovo campo
-		const sweepRows = (presentStage) =>
-			presentStage.reduce( (newStage, row, idx) => {
-
+		const sweepRows = (presentStage) => {
+			let i = 0
+			return presentStage.reduce((newStage, row, idx) => {
+				// contatore righe rimosse in questo reduce
 				// cerchiamo almeno una volta il valore 0 (cella vuota) nella riga
 				// se non presente ( -1 ) cerco allora se la riga non contiene
 				// pezzi bloccati da malus ( non removibili), se anche questo findindex
 				// torna -1 allora la riga è completa e va rimossa
 				if ((row.findIndex(cell => cell[0] === 0) === -1) &&
 					(row.findIndex(cell => cell[1] === 'blocked') === -1)) {
-					// contatore righe rimosse in questo reduce
-					i+= 1
-					console.log('Una Riga ', i)
+					i++
 					// Unshift aggiunge nellArray X nuove righe all'INIZIO, dando l'effetto che il resto
 					// scenda di X mantenendo lo Stage di dimensione costante
 					newStage.unshift(new Array(presentStage[0].length).fill([0, 'clear']))
-					if (idx === 19){
+					if (idx === 19)
 						setRowsCleared(i)
-						console.log("Setting da sweep: ", i)
-					}
+
 					return newStage
 				}
 				// altrimenti inseriamo la riga cosi com'é nello stage che stiamo ridisegnando e passiamo
 				// alla riga successiva
-				if (idx === 19) {
+				if (idx === 19)
 					setRowsCleared(i)
-					console.log("Setting fuori sweep: ", i)
-				}
+
 				newStage.push(row)
 				return newStage
-			}, [] )
+			}, [])
+		}
 
 
 		const update = prevStage => {
@@ -81,7 +79,6 @@ export const useStage = (tetro, spawnTetro) => {
 		}
 
 		setStage(prevState => update(prevState))
-
 	}, [tetro])
 
 	return [stage, setStage, rowsCleared];

@@ -60,6 +60,7 @@ function Tetris () {
 	const {asPath} = useRouter()
 	const Tlobby = asPath.split('#')[1].split('[')
 
+
 	// Connessione al WebSocket
 	useEffect( () => {
 		/* Create socket instance & emit the join request */
