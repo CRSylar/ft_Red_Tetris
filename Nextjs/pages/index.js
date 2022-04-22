@@ -3,10 +3,16 @@ import {Button} from "@mui/material";
 import {useRouter} from "next/router";
 import Favico from "../components/Favico";
 import LoginIcon from '@mui/icons-material/Login';
+import {useEffect} from "react";
 
-export default function Home() {
+export default function Home({cookie}) {
 
   const router = useRouter()
+
+  useEffect(() => {
+    if (cookie)
+      router.push('/home')
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -26,4 +32,14 @@ export default function Home() {
 
     </div>
   )
+}
+
+export async function getServerSideProps({req, res}) {
+  const cookie = req.headers.cookie || null
+
+  return {
+    props : {
+      cookie
+    }
+  }
 }
