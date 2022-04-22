@@ -12,7 +12,6 @@ export const useGameStatus = (rowsCleared = 0) => {
 
 	useEffect( () => {
 
-		console.log('Row Cleared: ',rowsCleared)
 		if (rowsCleared > 0) {
 
 			setScore(prevState => prevState + Points[rowsCleared % 4] * (level + 1))

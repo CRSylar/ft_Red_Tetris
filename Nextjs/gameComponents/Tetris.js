@@ -11,7 +11,7 @@ import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 import {useRouter} from "next/router";
 import io from "socket.io-client";
 import Spectrum from "./Spectrum";
-import Box from "@mui/material/Box";
+import ConfettiExplosion from '@reonomy/react-confetti-explosion';
 
 // Socket.io Instance
 let socket = null
@@ -49,6 +49,7 @@ function Tetris () {
 	const [inGame, setInGame] = useState(false);
 	const [gameOver, setGameOVer] = useState(false);
 	const [count, setCount] = useState(1)
+	const [confetti, setIsConfettiTime] = useState(false)
 	/* participants means the socket id of each player */
 	const [participants, setParticipants] = useState([])
 	const [spectreStage, setSpectreStage] = useState([null, null])
@@ -114,6 +115,8 @@ function Tetris () {
 			socket.on('YouWin', ({msg, host}) => {
 				setSpeed(null)
 				setInGame(false)
+				setGameOVer(true)
+				setIsConfettiTime(true)
 				console.log(msg)
 				setHost(host)
 			})
@@ -130,7 +133,6 @@ function Tetris () {
 			})
 				// Receiving maluses when other player sweep more rows ( receiving sweeped rows - 1 )
 			socket.on('emittingMalusRows', ({value}) => {
-				console.log('Malus: ',value)
 				setMalus(value)
 			})
 		}
@@ -162,7 +164,6 @@ function Tetris () {
 	}, [gameInfo.collision])
 
 	useEffect( () => {
-		console.log('BonusRow: ',gameInfo.bonusRow)
 		if (gameInfo.bonusRow > 0) {
 			emitMalus()
 			gameInfo.bonusRow = 0
@@ -273,6 +274,9 @@ function Tetris () {
 			{/* Actual player  */}
 			<StyledTetris>
 				<Stage stage={stage}/>
+				{
+					/*confetti && <ConfettiExplosion floorWidth={380} floorHeight={500} />*/
+				}
 
 				<div className={"Aside"}>
 					{gameOver ?
