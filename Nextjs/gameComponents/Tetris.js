@@ -12,6 +12,11 @@ import {useRouter} from "next/router";
 import io from "socket.io-client";
 import Spectrum from "./Spectrum";
 import styles from '../styles/Tetris.module.css';
+import NavBar from "../components/NavBar";
+import Favico from "../components/Favico";
+import {useRecoilState} from "recoil";
+import {userState} from "../utils/userAtom";
+
 
 // Socket.io Instance
 let socket = null
@@ -49,7 +54,7 @@ function Tetris () {
 	const [inGame, setInGame] = useState(false);
 	const [gameOver, setGameOVer] = useState(false);
 	const [count, setCount] = useState(1)
-	const [confetti, setIsConfettiTime] = useState(false)
+	const [user, _] = useRecoilState(userState)
 	/* participants means the socket id of each player */
 	const [participants, setParticipants] = useState([])
 	const [spectreStage, setSpectreStage] = useState([null, null])
@@ -116,7 +121,6 @@ function Tetris () {
 				setSpeed(null)
 				setInGame(false)
 				setGameOVer(true)
-				setIsConfettiTime(true)
 				console.log(msg)
 				setHost(host)
 			})
@@ -152,6 +156,21 @@ function Tetris () {
 			setMalus(0)
 		}
 	}, [malus])
+
+	useEffect( () => {
+		if (gameOver)
+			fetch('/api/bestScore',{
+				method: "POST",
+				headers: {"Content-type": "Application/json"},
+				body: JSON.stringify({score})
+			})
+
+		return fetch('/api/bestScore',{
+			method: "POST",
+			headers: {"Content-type": "Application/json"},
+			body: JSON.stringify({score})
+		})
+	}, [gameOver])
 
 	useEffect( () => {
 		if (gameInfo.collision){
@@ -190,6 +209,7 @@ function Tetris () {
 
 	const startGame = useCallback(() => {
 		// Reset everything
+		fetch('/api/updateTotalMatch')
 		setInGame(true)
 		setStage(createStage())
 		setSpeed(1000)
@@ -270,7 +290,8 @@ function Tetris () {
 	return (
 		<StyledTetrisWrapper role={"button"} tabIndex={"0"}
 		                     onKeyDown={e => move(e)} onKeyUp={keyUp} >
-
+			<Favico/>
+			<NavBar/>
 			{/* Actual player  */}
 			<StyledTetris>
 				<Stage stage={stage}/>
