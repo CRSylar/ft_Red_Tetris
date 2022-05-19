@@ -2,21 +2,22 @@ import React from 'react';
 import styles from "../styles/NavBar.module.css";
 import Image from 'next/image'
 import tetris from '../public/red-Teris.png'
-import SearchIcon from '@mui/icons-material/Search';
-import {useForm} from "react-hook-form";
+import PersonIcon from '@mui/icons-material/Person';
 import {useRouter} from "next/router";
 import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 function NavBar () {
 
-	const { register, handleSubmit } = useForm();
+	/* const { register, handleSubmit } = useForm(); */
 	const router = useRouter()
 
 
+	/*
 	const onSubmit = (data) => {
 		router.push(`/profile/${data.searchBox}`)
 	}
+	*/
 
 	const handleLogout = async () => {
 		fetch('/api/logOut')
@@ -31,7 +32,7 @@ function NavBar () {
 						<Image src={tetris} className={styles.imgLogo} alt={"Red_tetris"} width={60} height={60}  />
 					</div>
 
-					{/* SearchBox */}
+					{/* SearchBox
 					<div style={{maxWidth:'20rem'}}>
 						<div className={styles.searchBox}>
 							<div className={styles.searchIcon}>
@@ -46,10 +47,12 @@ function NavBar () {
 								/>
 							</form>
 						</div>
-					</div>
+					</div>*/}
 
 					{/* Buttons */}
 					<div className={styles.leftElements}>
+						<PersonIcon sx={{ marginLeft: '1rem', cursor:'pointer'}}
+						            onClick={() => router.push('/profile')}  />
 						<ManageAccountsIcon sx={{ marginLeft: '1rem', cursor:'pointer'}}
 						                    onClick={() => router.push('/settings')}  />
 						<LogoutIcon sx={{ marginLeft: '1rem',  cursor:'pointer'}}
