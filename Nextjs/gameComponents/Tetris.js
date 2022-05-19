@@ -11,7 +11,7 @@ import {useGameStatus} from "../gameHelpers/Hooks/useGameStatus";
 import {useRouter} from "next/router";
 import io from "socket.io-client";
 import Spectrum from "./Spectrum";
-import ConfettiExplosion from '@reonomy/react-confetti-explosion';
+import styles from '../styles/Tetris.module.css';
 
 // Socket.io Instance
 let socket = null
@@ -300,13 +300,14 @@ function Tetris () {
 
 				</div>
 
-				<div style={{color:"white"}}>
+
+				<div className={styles.playerCount} style={{color:'white'}}>
 					{`Player(s): ${count}`}
 				</div>
 			</StyledTetris>
 
 			{/* Other Players */}
-			<div style={{display:'flex', marginLeft:'1.5rem', overflowX:'scroll' }}>
+			<div style={{display:'flex', marginLeft:'1.5rem', overflowX:'visible' }}>
 			{
 				participants.map( (el) =>
 					<Spectrum key={el[0]} id={el[0]} name={el[1]} spectreStage={spectreStage} />
@@ -315,6 +316,7 @@ function Tetris () {
 			</div>
 
 		</StyledTetrisWrapper>
+
 	);
 }
 

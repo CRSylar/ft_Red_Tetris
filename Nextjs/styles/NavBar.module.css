@@ -19,6 +19,7 @@
 
 .imgLogo {
     object-fit: contain;
+    color: white;
 }
 
 .searchBox {

@@ -2391,6 +2391,15 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+react-confetti-explosion@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-confetti-explosion/-/react-confetti-explosion-1.0.3.tgz#425eaff3014f90a15a5039dd1b568c6358c11f01"
+  integrity sha512-mWXdLxfJycX9vQu5tdZ7t5jYk9XdjNu0Iu72k33wdqIs8nXBFdLvjrKVfV2wRYtPJNqR+10ernhaTEk+rc32GA==
+  dependencies:
+    "@material-ui/styles" "^4.11.3"
+    lodash "^4.17.21"
+    react "^17.0.1"
+
 react-dom@17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
