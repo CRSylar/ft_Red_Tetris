@@ -16,19 +16,10 @@ function HomeComponent () {
 	const [open, setOpen] = useState(false);
 	const [roomModal, setRoomModal] = useState(false)
 	const { register, handleSubmit, reset, formState: {errors} } = useForm();
-	const [user, setUser] = useRecoilState(userState)
+	const [user, _] = useRecoilState(userState)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
 	const handleRoomModal = () => setRoomModal(true)
-
-	const fetchUser = useCallback( async () =>{
-		const res = await fetch('/api/validate')
-		let user = {}
-		if (res.status === 200) {
-			user = await res.json()
-		}
-		setUser(user)
-	},[setUser])
 
 	const onSubmit = async ({roomName}) => {
 			reset()
@@ -36,10 +27,6 @@ function HomeComponent () {
 				pathname: '/match',
 				hash :  `${roomName}[${user.username}]` })
 	}
-
-	useEffect( () => {
-		fetchUser()
-	}, [fetchUser])
 
 	const ModalStyle = {
 		position: 'absolute',

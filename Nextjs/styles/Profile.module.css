@@ -1,0 +1,38 @@
+.main {
+    background-color: #161525;
+    min-height: 100vh;
+}
+
+.setting__box {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    margin: 15rem auto;
+    max-width: 330px;
+    padding: 0 1rem;
+    border-radius: 25px;
+
+    text-shadow:
+            0 0 7px #4188f3,
+            0 0 10px #969a9a,
+            0 0 21px #4188f3,
+            0 0 42px #4188f3,
+            0 0 82px #969a9a,
+            0 0 92px #969a9a,
+            0 0 102px #4188f3,
+            0 0 151px #4188f3;
+
+    border: 0.2rem solid #fff;
+    box-shadow: 0 0 .2rem #fff,
+    0 0 .2rem #fff,
+    0 0 2rem #0d56c2,
+    0 0 0.8rem #0ebcd2,
+    0 0 2.8rem #0ebcd2,
+    inset 0 0 1.3rem #0ebcd2;
+}
+
+@media only screen and (max-width: 768px) {
+    .setting__box{
+        background-color: #161525;
+    }
+}

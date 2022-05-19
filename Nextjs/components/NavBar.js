@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import styles from "../styles/NavBar.module.css";
 import Image from 'next/image'
 import tetris from '../public/red-Teris.png'
@@ -6,18 +6,33 @@ import PersonIcon from '@mui/icons-material/Person';
 import {useRouter} from "next/router";
 import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import {useRecoilState} from "recoil";
+import {userState} from "../utils/userAtom";
 
 function NavBar () {
 
 	/* const { register, handleSubmit } = useForm(); */
 	const router = useRouter()
+	const [user, setUser] = useRecoilState(userState)
 
+
+	const fetchUser = useCallback( async () =>{
+		const res = await fetch('/api/validate')
+		let user = {}
+		if (res.status === 200) {
+			user = await res.json()
+		}
+		setUser(user)
+	},[setUser])
 
 	/*
 	const onSubmit = (data) => {
 		router.push(`/profile/${data.searchBox}`)
 	}
 	*/
+	useEffect( () => {
+		fetchUser()
+	}, [fetchUser])
 
 	const handleLogout = async () => {
 		fetch('/api/logOut')
