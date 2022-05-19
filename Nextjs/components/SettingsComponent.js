@@ -1,29 +1,56 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from '/styles/Settings.module.css';
 import NavBar from "./NavBar";
 import Box from "@mui/material/Box";
 import {useForm} from "react-hook-form";
-import {Button, Input} from "@mui/material";
+import {Alert, Button, Input, Snackbar} from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import Favico from "./Favico";
+import {useRecoilState} from "recoil";
+import {userState} from "../utils/userAtom";
 
 function SettingsComponent ({id}) {
 
 	const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 	const { register, handleSubmit, reset, formState: { errors } } = useForm();
 	const { register:_register, handleSubmit:_handleSubmit, reset:_reset, formState: { errors:_errors } } = useForm();
+	const [user, setUser] = useRecoilState(userState)
+	const [open, setOpen] = useState(false)
+	const [severity, setSeverity] = useState('info')
+	const [alertMessage, setAlertMessage] = useState('')
 
-
-	const NameSubmit = (data) => {
-		console.log(data.username)
+	const NameSubmit = async ({newUserName}) => {
+		console.log('NewName: ',newUserName)
+		const res  = await fetch('/api/newName', {
+			method: "POST",
+			headers: {'Content-type': 'Application/json'},
+			body: JSON.stringify({newUserName})
+		})
+		const jsonRes = await res.json()
+		setSeverity(jsonRes.status)
+		setAlertMessage(jsonRes.message)
+		setOpen(true)
+		if (res.status === 201)
+			setUser(jsonRes.user)
 		reset()
 	}
 
-	const PassSubmit = (data) => {
-		if (data.password === data.confPassword)
-			console.log('PASS CHECK OK!')
-		else
-			console.log('PASS CHECK KO !')
+	const PassSubmit = async (data) => {
+		if (data.password === data.confPassword) {
+			const res = await fetch('/api/newPassword', {
+				method: "POST",
+				headers: {"Content-type": 'Application/json'},
+				body: JSON.stringify({data})
+			}).then(response => response.json())
+			setSeverity(res.status)
+			setAlertMessage(res.message)
+			setOpen(true)
+		}
+		else {
+			setSeverity('error')
+			setAlertMessage('Passwords is not matching !')
+			setOpen(true)
+		}
 		_reset()
 	}
 
@@ -37,9 +64,9 @@ function SettingsComponent ({id}) {
 				<form onSubmit={handleSubmit(NameSubmit)} >
 					<div className={styles.username__box}>
 						<Input startAdornment={<PersonIcon sx={{mr:'.5rem', color:'white'}}/>}
-						       placeholder={'Username'}
+						       placeholder={user.username}
 						       sx={{color:'white'}}
-						       {...register("username", {required:true})}/>
+						       {...register("newUserName", {required:true})}/>
 					<Button type={"submit"}
 					        sx={{color:'gray', textTransform:'none', marginLeft:'2rem',
 						        backgroundColor: '#161525',
@@ -87,6 +114,11 @@ function SettingsComponent ({id}) {
 							</div>
 				</form>
 			</Box>
+			<Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)} anchorOrigin={{vertical:'bottom', horizontal:'center'}}>
+				<Alert onClose={() => setOpen(false)} variant={'filled'} severity={severity}>
+					{alertMessage}
+				</Alert>
+			</Snackbar>
 		</div>
 	);
 }
