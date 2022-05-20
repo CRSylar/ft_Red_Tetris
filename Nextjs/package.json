@@ -5,7 +5,8 @@
     "dev": "next dev -p 3030",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -31,7 +32,9 @@
     "swr": "^1.2.2"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
     "eslint": "8.8.0",
-    "eslint-config-next": "12.0.10"
+    "eslint-config-next": "12.0.10",
+    "jest": "^28.1.0"
   }
 }

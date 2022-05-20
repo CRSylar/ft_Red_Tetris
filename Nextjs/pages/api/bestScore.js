@@ -4,7 +4,6 @@ import errorDispatcher from "../../lib/errorDispatcher";
 
 export default async function handler(req, res) {
 
-	console.log('=> ', req.body)
 	const valid = jwt.verify(req.cookies.Red_Tetris, process.env.JWT_SECRET, {},
 		(err, status) => status
 	)
@@ -20,10 +19,7 @@ export default async function handler(req, res) {
 				}
 			})
 
-			console.log(user)
-
 			if (user?.bestScore < score) {
-				console.log('qua ', score)
 				await prisma.user.update({
 					where: {
 						id : valid.id
@@ -35,7 +31,6 @@ export default async function handler(req, res) {
 			}
 			res.status(200).end()
 		} catch (e) {
-			console.log(e)
 			errorDispatcher(res, e);
 		}
 	}

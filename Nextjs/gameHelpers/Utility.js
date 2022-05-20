@@ -37,7 +37,6 @@ export const insertMalusRows = (stage, setStage,  rows) => {
 		newStage.shift()
 		newStage.push(new Array(STAGE_WIDTH).fill(['b', 'blocked']))
 	}
-	console.log(newStage)
 }
 
 export const drawSpectra = (spectra, id) => {
