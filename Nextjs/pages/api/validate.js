@@ -1,13 +1,14 @@
 import jwt from "jsonwebtoken";
 import errorDispatcher from "../../lib/errorDispatcher";
+import cookies from "../../utils/cookies";
 
-
-export default async function handler(req, res) {
+async function handler(req, res) {
 
 	const valid = jwt.verify(req.cookies.Red_Tetris, process.env.JWT_SECRET, {},
 		(err, status) => status
 	)
 	if (!valid){
+		res.cookie('Red_Tetris', '', {logout: true, path: "/", httpOnly: true})
 		res.status(401).json({status: "MissingToken Unauthorized"})
 	}
 	else {
@@ -25,3 +26,5 @@ export default async function handler(req, res) {
 
 	}
 }
+
+export default cookies(handler)
